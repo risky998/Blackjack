@@ -1,0 +1,10 @@
+#require "oUnit";;
+#require "yojson";;
+#require "ANSITerminal";;
+#directory "_build";;
+#load "deck.cmo";;
+#load "hand.cmo";;
+#load "command.cmo";;
+#load "main.cmo";;
+#load "authors.cmo";;
+#load "state.cmo";;
