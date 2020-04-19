@@ -1,6 +1,6 @@
 ### Starting build.
 # Target: checktypes.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(yojson), extension:ml, file:checktypes.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -modules checktypes.ml > checktypes.ml.depends # cached
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -modules checktypes.ml > checktypes.ml.depends
 # Target: authors.mli.depends, tags: { package(ANSITerminal), package(oUnit), package(yojson), extension:mli, file:authors.mli, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -modules authors.mli > authors.mli.depends # cached
 # Target: authors.cmi, tags: { package(ANSITerminal), package(oUnit), package(yojson), byte, compile, extension:mli, file:authors.mli, interf, ocaml, quiet, traverse }
@@ -13,6 +13,10 @@ ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -o comm
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -modules deck.mli > deck.mli.depends # cached
 # Target: deck.cmi, tags: { package(ANSITerminal), package(oUnit), package(yojson), byte, compile, extension:mli, file:deck.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -o deck.cmi deck.mli # cached
+# Target: player.mli.depends, tags: { package(ANSITerminal), package(oUnit), package(yojson), extension:mli, file:player.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -modules player.mli > player.mli.depends # cached
+# Target: player.cmi, tags: { package(ANSITerminal), package(oUnit), package(yojson), byte, compile, extension:mli, file:player.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -o player.cmi player.mli # cached
 # Target: checktypes.cmo, tags: { package(ANSITerminal), package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:checktypes.cmo, file:checktypes.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -o checktypes.cmo checktypes.ml # cached
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -o checktypes.cmo checktypes.ml
 # Compilation successful.

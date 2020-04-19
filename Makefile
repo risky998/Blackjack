@@ -1,4 +1,4 @@
-MODULES=authors command deck hand main state
+MODULES=authors command deck player main state
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

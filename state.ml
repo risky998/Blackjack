@@ -1,7 +1,11 @@
 (* Note: You may introduce new code anywhere in this file. *) 
 open Deck
+open Player
 (* TODO: replace [unit] with a type of your own design. *)
-type t = unit
+type t = {
+  players: Player.t list;
+  deck: Deck.t
+}
 
 let init_state adv =
   failwith "Unimplemented"

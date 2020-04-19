@@ -1,14 +1,14 @@
 type suit = Clubs | Diamonds | Hearts | Spades
 
 type rank = Two | Three | Four | Five | Six | Seven | Eight | Nine
-          | Ten | Jack | Queen | King | Ace 
+          | Ten | Jack | Queen | King | Ace of int
 
 type card = (rank * suit)
 
 type t = card list
 
 let ranks = [Two; Three; Four; Five; Six; Seven; Eight; Nine; Ten;
-             Jack; Queen; King; Ace]
+             Jack; Queen; King; Ace 11]
 let suits = [Clubs; Diamonds; Hearts; Spades]
 
 let rank (card:card) : rank = fst card
@@ -22,8 +22,9 @@ let shuffle deck =
   let sort_deck = List.sort compare new_deck in
   List.map (fun weighted_card -> snd weighted_card) sort_deck
 
-let points = function
-  | Ace -> 11 
+let points ((rank, suit):card) : int =
+  match rank with
+  | Ace x -> x
   | Two -> 2 
   | Three -> 3 
   | Four -> 4 
@@ -37,6 +38,9 @@ let points = function
   | Queen -> 10 
   | King -> 10
 
-
-
+let rec reduce_ace (hand:card list) : card list = 
+  match hand with
+  | [] -> []
+  | (Ace 11, suit)::t -> (Ace 1,suit)::t
+  | h::t -> h::reduce_ace t
 

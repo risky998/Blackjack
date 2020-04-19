@@ -1,7 +1,7 @@
 (** 
    Representation of a card deck with 52 cards.
 
-   This modile handles shuffling the deck.
+   This module handles shuffling the deck.
 *)
 
 (*The abstract representation type for a deck*)
@@ -35,4 +35,9 @@ val full_deck : t
 val shuffle : t -> t
 
 (*[points] is the blackjack value of each card*)
-val points : rank -> int
+val points : card -> int
+
+(*[reduce_ace] is the new hand with the first Ace with a value of 11 to be 
+  reduced to a value of 1 so that the player does not go bust. *)
+val reduce_ace : card list -> card list
+

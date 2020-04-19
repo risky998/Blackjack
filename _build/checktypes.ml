@@ -9,10 +9,27 @@ module type DeckSig = sig
   val suit : card -> suit
   val full_deck : t
   val shuffle : t -> t
-  val points : rank -> int
+  val points : card -> int
+  val reduce_ace : card list -> card list
 end
 
 module DeckCheck : DeckSig = Deck
+
+module type PlayerSig = sig
+  type t
+  type hand
+  type result = Legal of t | Illegal
+  val get_value_hand : hand -> int -> int 
+  val init_player : hand -> int -> int -> t
+  val player_hand : t -> hand
+  val total_money : t -> int
+  val value_hand : t -> int
+  val bet : int -> t -> result
+  val reduce_ace_below_21 : hand -> hand 
+  val draw_card : Deck.card -> t -> result
+end
+
+module PlayerCheck : PlayerSig = Player
 
 module type CommandSig = sig
   type money = int
