@@ -39,6 +39,10 @@ let bet money st =
 let player_win st =  
   Legal {st with total_money = st.total_money + 2*st.player_bet; player_bet = 0}
 
+(* If the player loses, they do not gain back the money that they bet.  *)
+let player_lose st =  
+  Legal {st with player_bet = 0}
+
 let rec reduce_ace_below_21 hand = 
   let value = get_value_hand hand 0 in
   match value with
