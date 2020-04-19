@@ -6,6 +6,7 @@ type t = {
   player_hand : hand;
   value_hand : int;
   total_money : int;
+  player_bet : int;
   (* current_turn : bool *)
 }
 
@@ -20,6 +21,7 @@ let init_player hand value money = {
   player_hand = hand;
   value_hand = get_value_hand hand 0;
   total_money = money;
+  player_bet = 0;
 }
 
 let player_hand st = st.player_hand
@@ -30,8 +32,12 @@ let value_hand st = st.value_hand
 
 let bet money st = 
   if (money <= st.total_money) then 
-    Legal {st with total_money = st.total_money - money}
+    Legal {st with total_money = st.total_money - money; player_bet = money}
   else Illegal
+
+(* If they player wins, they win twice what they bet *)
+let player_win st =  
+  Legal {st with total_money = st.total_money + 2*st.player_bet; player_bet = 0}
 
 let rec reduce_ace_below_21 hand = 
   let value = get_value_hand hand 0 in

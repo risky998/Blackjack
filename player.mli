@@ -34,6 +34,9 @@ val value_hand : t -> int
 (** [bet money st] is the new state after a player bets [money] on a play. *)
 val bet : int  -> t -> result
 
+(** [player_win st] is the new state if the player wins a hand *)
+val player_win: t -> result
+
 (** [reduce_ace_below_21 hand] is the new hand of the player after changing 
     the values of as few Aces as possible so that the value of the new hand is 
     less than 21 if possible. *)
