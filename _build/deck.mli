@@ -41,3 +41,6 @@ val points : card -> int
   reduced to a value of 1 so that the player does not go bust. *)
 val reduce_ace : card list -> card list
 
+val draw_start : t -> card list * t
+
+val draw : t -> (card * card list) option

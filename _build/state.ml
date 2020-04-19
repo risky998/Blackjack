@@ -7,16 +7,33 @@ type t = {
   deck: Deck.t
 }
 
-let init_state adv =
-  failwith "Unimplemented"
-
-let current_room_id st =
-  failwith "Unimplemented"
-
-let visited st =
-  failwith "Unimplemented"
-
 type result = Legal of t | Illegal
 
-let go ex adv st =
-  failwith "Unimplemented"
+let rec replace_player p players = 
+  match players with
+  | [] -> []
+  | h::t -> if Player.get_id p = Player.get_id h then p::t
+    else replace_player p t
+
+let first_draw_2 g =
+  let rec each_player_draw2 g players =
+    match players with 
+    | [] -> g
+    | p::t -> 
+      let draw_2 = Deck.draw_start g.deck in
+      let cards_2 = fst draw_2 in
+      let remaining_deck = snd draw_2 in
+      let p' = Player.draw_card (List.nth cards_2 0) p |> Player.draw_card (List.nth cards_2 1) in
+      each_player_draw2 {players = replace_player p' g.players;
+                         deck = remaining_deck} t in
+  each_player_draw2 g g.players
+
+let init_state = 
+  first_draw_2 { players = [Player.init_player "1" 300;
+                            Player.init_player "2" 300; 
+                            Player.init_player "3" 300;
+                            Player.init_player "4" 300];
+                 deck = Deck.(full_deck |> shuffle) }
+
+
+(* let hit player g *)

@@ -11,6 +11,8 @@ module type DeckSig = sig
   val shuffle : t -> t
   val points : card -> int
   val reduce_ace : card list -> card list
+  val draw_start : t -> card list * t
+  val draw : t -> (card * card list) option
 end
 
 module DeckCheck : DeckSig = Deck
@@ -18,15 +20,19 @@ module DeckCheck : DeckSig = Deck
 module type PlayerSig = sig
   type t
   type hand
-  type result = Legal of t | Illegal
   val get_value_hand : hand -> int -> int 
-  val init_player : hand -> int -> int -> t
+  val init_player : string -> int -> t
   val player_hand : t -> hand
   val total_money : t -> int
   val value_hand : t -> int
-  val bet : int -> t -> result
+  val get_id : t -> string
+  val is_dealer : t -> bool
+  val set_dealer : t -> t
+  val bet : int  -> t -> t
+  val player_win: t -> t
   val reduce_ace_below_21 : hand -> hand 
-  val draw_card : Deck.card -> t -> result
+  val draw_card : Deck.card -> t -> t
+  val draw_card_dealer : Deck.card -> t -> t
 end
 
 module PlayerCheck : PlayerSig = Player
@@ -47,16 +53,15 @@ end
 
 module CommandCheck : CommandSig = Command
 
-(* module type StateSig = sig
-   type t 
-   val init_state : Adventure.t -> t
-   val current_room_id : t -> string
-   val visited : t -> string list
-   type result = Legal of t | Illegal
-   val go : Adventure.exit_name -> Adventure.t -> t -> result
-   end
+module type StateSig = sig
+  type t 
+  type result = Legal of t | Illegal
+  val replace_player : Player.t -> Player.t list -> Player.t list
+  val first_draw_2 : t -> t
+  val init_state : t
+end
 
-   module StateCheck : StateSig = State *)
+module StateCheck : StateSig = State
 
 module type AuthorsSig = sig
   val hours_worked : int

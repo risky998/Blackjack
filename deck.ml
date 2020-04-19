@@ -44,3 +44,12 @@ let rec reduce_ace (hand:card list) : card list =
   | (Ace 11, suit)::t -> (Ace 1,suit)::t
   | h::t -> h::reduce_ace t
 
+let draw_start (deck:t) = 
+  match deck with
+  | c1::c2::t -> ([c1; c2], t)
+  | d -> ([], d)
+
+let draw (deck:t) = 
+  match deck with
+  | [] -> None
+  | h::t -> Some (h, t)

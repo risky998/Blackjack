@@ -7,43 +7,24 @@
    and functions that cause the state to change.
 *)
 
-(* You are free to add more code here. *)
-
-(**********************************************************************
- * DO NOT CHANGE THIS CODE
- * It is part of the interface the course staff will use to test your 
- * submission.
-*)
-
 (** The abstract type of values representing the game state. *)
 type t 
 
-(** [init_state a] is the initial state of the game when playing adventure [a]. 
-    In that state the adventurer is currently located in the starting room,
-    and they have visited only that room. *)
-(* val init_state : Adventure.t -> t
+(* The type representing the result of an attempted move. *)
+type result = Legal of t | Illegal
 
-   (** [current_room_id st] is the identifier of the room in which the adventurer
-    currently is located in state [st]. *)
-   val current_room_id : t -> string
+(** [replace_player p players] is a new list of players with the new state of
+    player p replaced in players.  *)
+val replace_player : Player.t -> Player.t list -> Player.t list
 
-   (** [visited st] is a set-like list of the room identifiers the adventurer has 
-    visited in state [st]. The adventurer has visited a room [rm] if their
-    current room location is or has ever been [rm]. *)
-   val visited : t -> string list
+(** [first_draw_2 g players] is the new state of the game after each player
+    has drawn their first 2 cards and those cards drawn are removed from the 
+    deck.  *)
+val first_draw_2 : t -> t
 
-   (** The type representing the result of an attempted movement. *)
-   type result = Legal of t | Illegal
+(** [init_state] is the initial state of the game after each player
+    has drawn their first 2 cards and those cards drawn are removed from the 
+    deck. *)
+val init_state : t
 
-   (** [go exit adv st] is [r] if attempting to go through exit [exit] in state 
-    [st] and adventure [adv] results in [r].  If [exit] is an exit from the 
-    adventurer's current room, then [r] is [Legal st'], where in [st'] the 
-    adventurer is now located in the room to which [exit] leads.  Otherwise, 
-    the result is [Illegal]. 
-    Effects: none.  [go] is not permitted to do any printing. *)
-   val go : Adventure.exit_name -> Adventure.t -> t -> result *)
 
-(* END DO NOT CHANGE
- **********************************************************************)
-
-(* You are free to add more code here. *)
