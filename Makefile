@@ -1,4 +1,5 @@
-MODULES=authors blackjack command deck main player bet computer formatc strings training
+MODULES= #can change these
+authors blackjack command deck main player bet computer formatc strings training
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
