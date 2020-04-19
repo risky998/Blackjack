@@ -41,6 +41,12 @@ val points : card -> int
   reduced to a value of 1 so that the player does not go bust. *)
 val reduce_ace : card list -> card list
 
+(* [draw_start deck] is a tuple where the first element is a list of the 2
+   cards drawn from the deck and the second element is the new deck after the 
+   2 cards have been removed. *)
 val draw_start : t -> card list * t
 
-val draw : t -> (card * card list) option
+(* [draw_start deck] is Some (card, deck') where card is the card drawn
+   from the deck and deck' is the reamining deck which is shuffled.
+   None is returned if there are no more cards to be drawn from the deck. *)
+val draw : t -> (card * t) option

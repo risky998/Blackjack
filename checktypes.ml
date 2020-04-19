@@ -12,7 +12,7 @@ module type DeckSig = sig
   val points : card -> int
   val reduce_ace : card list -> card list
   val draw_start : t -> card list * t
-  val draw : t -> (card * card list) option
+  val draw : t -> (card * t) option
 end
 
 module DeckCheck : DeckSig = Deck
@@ -59,6 +59,8 @@ module type StateSig = sig
   val replace_player : Player.t -> Player.t list -> Player.t list
   val first_draw_2 : t -> t
   val init_state : t
+  val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
+  val hit : Player.t -> t -> result
 end
 
 module StateCheck : StateSig = State

@@ -49,7 +49,7 @@ let draw_start (deck:t) =
   | c1::c2::t -> ([c1; c2], t)
   | d -> ([], d)
 
-let draw (deck:t) = 
+let draw deck = 
   match deck with
   | [] -> None
-  | h::t -> Some (h, t)
+  | h::t -> Some (h, shuffle t)

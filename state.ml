@@ -36,4 +36,17 @@ let init_state =
                  deck = Deck.(full_deck |> shuffle) }
 
 
-(* let hit player g *)
+let rec update_player card p players = 
+  match players with 
+  | [] -> []
+  | h::t -> if p = h then (Player.draw_card card p)::t
+    else h::(update_player card p t) 
+
+let rec hit player g =
+  match Deck.draw g.deck with
+  | None -> Illegal
+  | Some (card, remaining) -> 
+    Legal {
+      players = update_player card player g.players;
+      deck = remaining
+    }

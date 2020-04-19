@@ -27,4 +27,16 @@ val first_draw_2 : t -> t
     deck. *)
 val init_state : t
 
+(** [update_player card p players] is a new list of players after a player [p]
+    has drawn a card [card] and his corresponding hand and hand value are 
+    updated in the new player list. *)
+val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
+
+(** [hit player g] is [r] after a  player [player] chooses to hit. 
+    If the deck still has available cards to be 
+    drawn, then [r] is [Legal g'], i.e. the new state of the game with the player's
+    hand and hand value updated, and the drawn card removed from the deck.  
+    Otherwise, the result is [Illegal]. *)
+val hit : Player.t -> t -> result
+
 
