@@ -31,6 +31,12 @@ val total_money : t -> int
 (** [total_money st] is the total money of the player in state [st]. *)
 val value_hand : t -> int
 
+(** [is_deaer st] is whether the player is a dealer in state [st]. *)
+val is_dealer : t -> int
+
+(** [set_dealer st] is sets the player as a dealer in state [st]. *)
+val set_dealer : t -> int
+
 (** [bet money st] is the new state after a player bets [money] on a play. *)
 val bet : int  -> t -> result
 
@@ -46,3 +52,7 @@ val reduce_ace_below_21 : hand -> hand
     card, with the value of Aces reduced from 11 to 1 to ensure the player's
     hand value is below 21 if possible. *)
 val draw_card : Deck.card -> t -> result
+
+(** [draw_card card st] is the new state of the dealer after drawing a 
+    card. The dealer will only draw if hand is less than or equal 16 in value.  *)
+val draw_card_dealer : Deck.card -> t -> result
