@@ -17,8 +17,7 @@ type result = Legal of t | Illegal
     player p replaced in players.  *)
 val replace_player : Player.t -> Player.t list -> Player.t list
 
-(** [replace_player p players] is a new list of players with the new state of
-    player p replaced in players.  *)
+(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
 val get_dealer_hand_value :  Player.t list -> int
 
 (** [first_draw_2 g players] is the new state of the game after each player
@@ -43,4 +42,6 @@ val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
     Otherwise, the result is [Illegal]. *)
 val hit : Player.t -> t -> result
 
+(** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is higher than the dealer's hand value  *)
+val player_won: Player.t -> Player.t list -> bool 
 

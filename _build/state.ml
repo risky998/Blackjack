@@ -56,5 +56,9 @@ let rec hit player g =
       deck = remaining
     }
 
-
+let rec player_won p players = 
+  let dealer_value = get_dealer_hand_value players in 
+  match players with 
+  | [] -> false
+  | h::t -> if (Player.get_id p = Player.get_id h) && (dealer_value < value_hand h) then true else false
 
