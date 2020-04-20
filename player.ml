@@ -9,6 +9,7 @@ type t = {
   total_money : int;
   player_bet : int;
   dealer: bool;
+  ai: bool;
   (* current_turn : bool *)
 }
 
@@ -17,13 +18,14 @@ let rec get_value_hand hand acc =
   | [] -> 0
   | h::t -> get_value_hand t (acc+(Deck.points h))
 
-let init_player id money dealer = {
+let init_player id money dealer ai = {
   id = id;
   player_hand = [];
   value_hand = 0;
   total_money = money;
   player_bet = 0;
   dealer = dealer;
+  ai = ai;
 }
 
 let player_hand st = st.player_hand

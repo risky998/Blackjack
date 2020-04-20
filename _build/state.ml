@@ -34,10 +34,10 @@ let first_draw_2 g =
   each_player_draw2 g g.players
 
 let init_state = 
-  first_draw_2 { players = [Player.init_player "1" 300 true;
-                            Player.init_player "2" 300 false; 
-                            Player.init_player "3" 300 false;
-                            Player.init_player "4" 300 false];
+  first_draw_2 { players = [Player.init_player "1" 300 true false ;
+                            Player.init_player "2" 300 false false ; 
+                            Player.init_player "3" 300 false true;
+                            Player.init_player "4" 300 false true];
                  deck = Deck.(full_deck |> shuffle) } 
 
 
