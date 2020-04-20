@@ -17,7 +17,7 @@ val get_value_hand : hand -> int -> int
 (** [init_state hand value money] is the initial state of a blackjack player
     In that state the player starts with the cards in [hand], which have
     a value of [value], and has starting money of [money]. *)
-val init_player : string -> int -> t
+val init_player : string -> int -> bool -> t
 
 (** [player_hand st] is the hand of the player in state [st]. *)
 val player_hand : t -> hand

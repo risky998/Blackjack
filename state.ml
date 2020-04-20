@@ -15,6 +15,11 @@ let rec replace_player p players =
   | h::t -> if Player.get_id p = Player.get_id h then p::t
     else replace_player p t
 
+let rec get_dealer_hand_value players = 
+  match players with 
+  | [] -> failwith "Dealer was not found"
+  | h::t -> if (is_dealer h) then value_hand h else get_dealer_hand_value t 
+
 let first_draw_2 g =
   let rec each_player_draw2 g players =
     match players with 
@@ -29,11 +34,11 @@ let first_draw_2 g =
   each_player_draw2 g g.players
 
 let init_state = 
-  first_draw_2 { players = [Player.init_player "1" 300;
-                            Player.init_player "2" 300; 
-                            Player.init_player "3" 300;
-                            Player.init_player "4" 300];
-                 deck = Deck.(full_deck |> shuffle) }
+  first_draw_2 { players = [Player.init_player "1" 300 true;
+                            Player.init_player "2" 300 false; 
+                            Player.init_player "3" 300 false;
+                            Player.init_player "4" 300 false];
+                 deck = Deck.(full_deck |> shuffle) } 
 
 
 let rec update_player card p players = 
@@ -50,3 +55,6 @@ let rec hit player g =
       players = update_player card player g.players;
       deck = remaining
     }
+
+
+
