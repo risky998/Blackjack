@@ -1,36 +1,40 @@
 module type DeckSig = sig
   type t
-  type suit
-  type rank
-  type card
+  type suit = Clubs | Diamonds | Hearts | Spades
+  type rank = Two | Three | Four | Five | Six | Seven | Eight | Nine
+            | Ten | Jack | Queen | King | Ace of int
+  type card = (rank * suit)
   val ranks : rank list
   val suits : suit list
   val rank : card -> rank
   val suit : card -> suit
-  val full_deck : t
+  val empty : t
+  val size: t -> int
+  val full_deck : unit -> t
   val shuffle : t -> t
   val points : card -> int
   val reduce_ace : card list -> card list
   val draw_start : t -> card list * t
   val draw : t -> (card * t) option
+  val string_of_card : card -> string
 end
 
 module DeckCheck : DeckSig = Deck
 
 module type PlayerSig = sig
   type t
-  type hand
-  val get_value_hand : hand -> int -> int 
-  val init_player : string -> int -> t
-  val player_hand : t -> hand
+  val get_value_hand : Deck.card list -> int -> int 
+  val init_player : Yojson.Basic.t -> t
+  val player_hand : t -> Deck.card list
   val total_money : t -> int
   val value_hand : t -> int
   val get_id : t -> string
+  val is_ai : t -> bool
   val is_dealer : t -> bool
   val set_dealer : t -> t
   val bet : int  -> t -> t
   val player_win: t -> t
-  val reduce_ace_below_21 : hand -> hand 
+  val reduce_ace_below_21 : Deck.card list -> Deck.card list
   val draw_card : Deck.card -> t -> t
   val draw_card_dealer : Deck.card -> t -> t
 end
@@ -58,9 +62,14 @@ module type StateSig = sig
   type result = Legal of t | Illegal
   val replace_player : Player.t -> Player.t list -> Player.t list
   val first_draw_2 : t -> t
-  val init_state : t
+  val init_state : Yojson.Basic.t -> t
   val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
   val hit : Player.t -> t -> result
+  val player_won: Player.t -> Player.t list -> bool 
+  val player_bust: Player.t -> Player.t list -> bool 
+  val player_blackjack: Player.t -> Player.t list -> bool 
+  val get_player: t -> Player.t
+  val get_dealer: t -> Player.t
 end
 
 module StateCheck : StateSig = State

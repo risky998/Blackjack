@@ -1,0 +1,94 @@
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Runner: processes
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Chooser: simple
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration suite_name = "test suite for Blacjack"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration cache_filename = "/Users/SamuelDNinja/Documents/Cornell/5. Spring 2020/CS 3110_Data Structures & Functional Programming/Final Project/Blackjack/_build/oUnit-$(suite_name).cache"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration run_gc_full_major = "true"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration display = "true"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration results_style_1_X = "false"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration testdata_dir = "none"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration health_check_interval = "1."
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration verbose = "false"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration chooser = "simple"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration output_html_dir = "none"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration processes_kill_period = "5."
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration runner = "processes"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration shards = "2"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration processes_grace_period = "5."
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration log_encoding = "utf-8"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration output_junit_file = "none"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration ci = "false"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Configuration output_file = "/Users/SamuelDNinja/Documents/Cornell/5. Spring 2020/CS 3110_Data Structures & Functional Programming/Final Project/Blackjack/_build/oUnit-$(suite_name)-$(shard_id).log"
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Using 2 workers maximum.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Starting worker number Samuels-MBP-9#01.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Worker Samuels-MBP-9#01 started.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Starting worker number Samuels-MBP-9#02.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Worker Samuels-MBP-9#02 started.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:1:testing suit, test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Start test test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:1:testing suit, test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: Start test test suite for Blacjack:1:testing suit.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:1:testing suit, test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Test test suite for Blacjack:0:testing rank is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:1:testing suit, test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: End test test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: Test test suite for Blacjack:1:testing suit is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:1:testing suit, test suite for Blacjack:0:testing rank.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: End test test suite for Blacjack:1:testing suit.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:2:testing full_deck, test suite for Blacjack:1:testing suit.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:3:testing shuffle, test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Start test test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:3:testing shuffle, test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: Start test test suite for Blacjack:3:testing shuffle.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:3:testing shuffle, test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Test test suite for Blacjack:2:testing full_deck is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: Test test suite for Blacjack:3:testing shuffle is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:3:testing shuffle, test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: End test test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: End test test suite for Blacjack:3:testing shuffle.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:3:testing shuffle, test suite for Blacjack:2:testing full_deck.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:5:testing reduce_ace1, test suite for Blacjack:4:testing points.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: Start test test suite for Blacjack:4:testing points.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Start test test suite for Blacjack:5:testing reduce_ace1.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:5:testing reduce_ace1, test suite for Blacjack:4:testing points.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: Test test suite for Blacjack:4:testing points is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Test test suite for Blacjack:5:testing reduce_ace1 is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:5:testing reduce_ace1, test suite for Blacjack:4:testing points.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#02 I: End test test suite for Blacjack:4:testing points.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: End test test suite for Blacjack:5:testing reduce_ace1.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 2 tests running: test suite for Blacjack:5:testing reduce_ace1, test suite for Blacjack:4:testing points.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Still 1 tests running : test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 1 tests running: test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Start test test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Still 1 tests running : test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 1 tests running: test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: Test test suite for Blacjack:6:testing reduce_ace2 is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Still 1 tests running : test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 1 tests running: test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#01 I: End test test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Still 1 tests running : test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 1 tests running: test suite for Blacjack:6:testing reduce_ace2.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: 0 tests running: .
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Worker Samuels-MBP-9#01 has ended.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Worker Samuels-MBP-9#02 died unexpectedly.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Used 2 worker during test execution.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Run 4 tests with shard Samuels-MBP-9#01.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Run 3 tests with shard Samuels-MBP-9#02.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Check health of shard Samuels-MBP-9#01, 1 times.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Check health of shard Samuels-MBP-9#02, 6 times.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: ==============
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Summary:
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:6:testing reduce_ace2 is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:5:testing reduce_ace1 is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:4:testing points is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:3:testing shuffle is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:2:testing full_deck is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:1:testing suit is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Test test suite for Blacjack:0:testing rank is successful.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Ran: 7 tests in: 0.13 seconds.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Cases: 7.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Tried: 7.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Errors: 0.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Failures: 0.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Skip: 0.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Todo: 0.
+2020-04-22T02:59:34+00:00 Samuels-MBP-9#00 I: Timeout: 0.

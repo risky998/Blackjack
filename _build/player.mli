@@ -6,21 +6,21 @@
 *)
 
 (* The abstract representation type for a player's hand. *)
-type hand
+(* type hand = Deck.t *)
 
 (* The abstract representation type for blackjack player. *)
 type t
 
 (** [get_value_hand hand acc] is the value of the cards in a player's hand. *)
-val get_value_hand : hand -> int -> int 
+val get_value_hand : Deck.card list -> int -> int 
 
 (** [init_state hand value money] is the initial state of a blackjack player
     In that state the player starts with the cards in [hand], which have
     a value of [value], and has starting money of [money]. *)
-val init_player : string -> int -> bool -> bool -> t
+val init_player : Yojson.Basic.t -> t
 
 (** [player_hand st] is the hand of the player in state [st]. *)
-val player_hand : t -> hand
+val player_hand : t -> Deck.card list
 
 (** [total_money st] is the total money of the player in state [st]. *)
 val total_money : t -> int
@@ -30,6 +30,9 @@ val value_hand : t -> int
 
 (** [get_id st] is the unique identifier of the player in state [st]. *)
 val get_id : t -> string
+
+(** [is_ai st] is whether the player is an AI in state [st]. *)
+val is_ai : t -> bool
 
 (** [is_deaer st] is whether the player is a dealer in state [st]. *)
 val is_dealer : t -> bool
@@ -46,7 +49,7 @@ val player_win: t -> t
 (** [reduce_ace_below_21 hand] is the new hand of the player after changing 
     the values of as few Aces as possible so that the value of the new hand is 
     less than 21 if possible. *)
-val reduce_ace_below_21 : hand -> hand 
+val reduce_ace_below_21 : Deck.card list -> Deck.card list
 
 (** [draw_card card st] is the new state of the player after drawing a 
     card, with the value of Aces reduced from 11 to 1 to ensure the player's

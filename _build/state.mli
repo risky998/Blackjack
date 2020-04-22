@@ -28,7 +28,7 @@ val first_draw_2 : t -> t
 (** [init_state] is the initial state of the game after each player
     has drawn their first 2 cards and those cards drawn are removed from the 
     deck. *)
-val init_state : t
+val init_state : Yojson.Basic.t -> t
 
 (** [update_player card p players] is a new list of players after a player [p]
     has drawn a card [card] and his corresponding hand and hand value are 
@@ -45,3 +45,13 @@ val hit : Player.t -> t -> result
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is higher than the dealer's hand value  *)
 val player_won: Player.t -> Player.t list -> bool 
 
+(** [player_won p players] returns whether the player [p] busted, i.e their hand value is higher than 21  *)
+val player_bust: Player.t -> Player.t list -> bool 
+
+(** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is 21 *)
+val player_blackjack: Player.t -> Player.t list -> bool 
+
+
+val get_player: t -> Player.t
+
+val get_dealer: t -> Player.t

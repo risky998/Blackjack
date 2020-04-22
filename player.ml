@@ -1,10 +1,10 @@
 open Deck
+open Yojson.Basic.Util
 
-type hand = card list
 
 type t = {
   id : string;
-  player_hand : hand;
+  player_hand : Deck.card list;
   value_hand : int;
   total_money : int;
   player_bet : int;
@@ -18,14 +18,17 @@ let rec get_value_hand hand acc =
   | [] -> 0
   | h::t -> get_value_hand t (acc+(Deck.points h))
 
-let init_player id money dealer ai = {
-  id = id;
+(** [init_player j] is type [player] with the fields id, player_hand, 
+    value_hand, total_money, player_bet, dealer, and ai.
+    Requires: [j] is a valid JSON player representation. *)
+let init_player j = {
+  id = j |> member "id" |> to_string;
   player_hand = [];
   value_hand = 0;
-  total_money = money;
+  total_money = j |> member "total_money" |> to_int;
   player_bet = 0;
-  dealer = dealer;
-  ai = ai;
+  dealer = j |> member "dealer" |> to_bool;
+  ai = j |> member "ai" |> to_bool;
 }
 
 let player_hand st = st.player_hand
@@ -35,6 +38,8 @@ let total_money st = st.total_money
 let value_hand st = st.value_hand
 
 let get_id st = st.id
+
+let is_ai st = st.ai
 
 let is_dealer st = st.dealer
 

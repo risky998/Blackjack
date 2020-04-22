@@ -1,6 +1,6 @@
 (**
    Metadata about this submission.
-   @author TODO Name (netid). 
+   Kazuya Chue (kc843), Rishabh Sarup (rs868), Samuel Lye (sl2982)
 *)
 
 (** [hours_worked] is the number of hours you worked on this assignment. *)

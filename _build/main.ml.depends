@@ -1,1 +1,1 @@
-main.ml: ANSITerminal
+main.ml: ANSITerminal Command Deck List Player State Yojson

@@ -1,5 +1,5 @@
 open OUnit2
-open Command
+open Deck
 open State
 
 (********************************************************************
@@ -59,9 +59,30 @@ let cmp_demo =
    use them, too.  Any .json files in this directory will be included
    by [make zip] as part of your CMS submission. *)
 
-let adventure_tests =
+let deck_tests =
   [
-    (* TODO: add tests for the Adventure module here *)
+    "testing rank" >:: (fun _ -> assert_equal Two (rank (Two, Clubs)));
+
+    "testing suit" >:: (fun _ -> assert_equal Clubs (suit (Two, Clubs)));
+
+    "testing full_deck" >:: (fun _ -> assert_equal 52 (Deck.size (full_deck ())));
+
+    "testing shuffle" >:: (fun _ -> assert_equal 52 (Deck. size (shuffle (full_deck ()))));
+
+    "testing points" >:: (fun _ -> assert_equal 2 (points (Two, Clubs)));
+
+    "testing draw_start" >:: (fun _ -> assert_equal ([(Ace 11, Spades); (Two, Clubs)], [(Three, Diamonds)])
+                                 (draw_start [(Two, Clubs); (Four, Hearts); (Six, Hearts)]));
+
+    "testing reduce_ace1" >:: (fun _ -> assert_equal 1 ([(Ace 11, Spades); (Ace 11, Clubs)] |> reduce_ace |> List.hd |> points));
+
+    "testing reduce_ace2" >:: (fun _ -> assert_equal 11 ([(Ace 11, Spades); (Ace 11, Clubs)] |> reduce_ace |> List.tl |> List.hd |> points));
+
+    (* "testing draw_start" >:: (fun _ -> assert_equal ([(Ace 11, Spades); (Two, Clubs)], [(Three, Diamonds)]) 
+                                 [(Ace 11, Spades); (Two, Clubs); (Three, Diamonds)] |> draw_start); *)
+
+    (* "testing draw" >:: (fun _ -> assert_equal ([(Ace 11, Spades)], [(Two, Clubs); (Three, Diamonds)]) 
+                           (draw [(Ace 11, Spades); (Two, Clubs), (Three, Diamonds)]));    *)
   ]
 
 let command_tests =
@@ -75,8 +96,8 @@ let state_tests =
   ]
 
 let suite =
-  "test suite for A2"  >::: List.flatten [
-    adventure_tests;
+  "test suite for Blacjack"  >::: List.flatten [
+    deck_tests;
     command_tests;
     state_tests;
   ]
