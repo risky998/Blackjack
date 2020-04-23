@@ -12,18 +12,37 @@ let print_cards = function
 (** [game_interface st] is the game interface that prompts the user
     to enter a command and updates the state [st] accordingly. *)
 let rec game_interface game = 
-  (* failwith "No" *)
   let main_player = get_player game in
   let player_hand = List.map(fun card -> string_of_card card) (player_hand main_player) in
   ANSITerminal.
-    (print_string [red] ("Cards: ["^
-                         print_cards (player_hand)^"]\n"));
+    (print_string [blue] ("Cards: ["^
+                          print_cards (player_hand)^"]\n"));
+  let player_value = Player.value_hand main_player in
+  ANSITerminal.
+    (print_string [blue] ("Hand value: "^
+                          (string_of_int player_value)^"\n"));
   match read_line () with
   | exception End_of_file -> ()     
-  | command -> begin match (parse command) with
+  | command -> 
+    begin 
+      match (parse command) with
+      | exception Empty -> 
+        ANSITerminal.(print_string [yellow] 
+                        "\nError: Please enter a command!\n");
+        game_interface game
+      | exception Malformed -> 
+        ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
+        game_interface game
       | Quit -> 
         ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
         exit 0
+      | Hit -> 
+        begin 
+          match State.hit main_player game with
+          | Legal new_game -> game_interface new_game
+          | Illegal -> ANSITerminal.(print_string [yellow] 
+                                       "\nError: No cards available!\n");
+        end
       | _ -> 
         ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
         exit 0

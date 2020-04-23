@@ -13,7 +13,7 @@ module type DeckSig = sig
   val full_deck : unit -> t
   val shuffle : t -> t
   val points : card -> int
-  val reduce_ace : card list -> card list
+  val reduce_ace : card list -> card list 
   val draw_start : t -> card list * t
   val draw : t -> (card * t) option
   val string_of_card : card -> string
@@ -34,7 +34,6 @@ module type PlayerSig = sig
   val set_dealer : t -> t
   val bet : int  -> t -> t
   val player_win: t -> t
-  val reduce_ace_below_21 : Deck.card list -> Deck.card list
   val draw_card : Deck.card -> t -> t
   val draw_card_dealer : Deck.card -> t -> t
 end

@@ -13,9 +13,10 @@ type t = {
   (* current_turn : bool *)
 }
 
+(** [get_value_hand hand acc] is the value of the cards in a player's hand. *)
 let rec get_value_hand hand acc = 
   match hand with
-  | [] -> 0
+  | [] -> acc
   | h::t -> get_value_hand t (acc+(Deck.points h))
 
 (** [init_player j] is type [player] with the fields id, player_hand, 
@@ -58,11 +59,17 @@ let player_win st =
 let player_lose st =  
   {st with player_bet = 0}
 
+(** [reduce_ace_below_21 hand] is the new hand of the player after changing 
+    the values of as few Aces as possible so that the value of the new hand is 
+    less than 21 if possible. *)
 let rec reduce_ace_below_21 hand = 
   let value = get_value_hand hand 0 in
-  match value with
-  | _ when value > 21 -> reduce_ace_below_21 (Deck.reduce_ace hand)
-  | _ -> hand
+  if value > 21 then 
+    let new_hand = Deck.reduce_ace hand in
+    match get_value_hand (new_hand) 0 with
+    | n when n = value -> hand
+    | _ -> new_hand
+  else hand
 
 let draw_card card st = 
   let new_hand = card::st.player_hand in

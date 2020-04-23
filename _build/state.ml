@@ -32,18 +32,16 @@ let first_draw_2 g =
     | p::t -> 
       let draw_2 = Deck.draw_start g.deck in
       let cards_2 = fst draw_2 in
-      (* ANSITerminal.(print_string [red] ("Cards: ["^
-                                        print_cards (List.map(fun card -> string_of_card card) cards_2)^"]\n")); *)
       let remaining_deck = snd draw_2 in
-      (* ANSITerminal.(print_string [blue] (Player.get_id p)); *)
-      let p' = Player.draw_card (List.nth cards_2 0) p |> Player.draw_card (List.nth cards_2 1) in
+      let p' = Player.draw_card (List.nth cards_2 0) p |> 
+               Player.draw_card (List.nth cards_2 1) in
       each_player_draw2 {players = replace_player p' g.players;
                          deck = remaining_deck} t in
   each_player_draw2 g g.players
 
 let init_state json = 
   first_draw_2 { players = json |> member "players" |> to_list |> List.map init_player;
-                 deck = Deck.(full_deck ()|> shuffle) } 
+                 deck = Deck.(full_deck () |> shuffle) } 
 
 let rec update_player card p players = 
   match players with 

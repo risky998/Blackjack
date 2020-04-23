@@ -11,9 +11,6 @@
 (* The abstract representation type for blackjack player. *)
 type t
 
-(** [get_value_hand hand acc] is the value of the cards in a player's hand. *)
-val get_value_hand : Deck.card list -> int -> int 
-
 (** [init_state hand value money] is the initial state of a blackjack player
     In that state the player starts with the cards in [hand], which have
     a value of [value], and has starting money of [money]. *)
@@ -45,11 +42,6 @@ val bet : int  -> t -> t
 
 (** [player_win st] is the new state if the player wins a hand *)
 val player_win: t -> t
-
-(** [reduce_ace_below_21 hand] is the new hand of the player after changing 
-    the values of as few Aces as possible so that the value of the new hand is 
-    less than 21 if possible. *)
-val reduce_ace_below_21 : Deck.card list -> Deck.card list
 
 (** [draw_card card st] is the new state of the player after drawing a 
     card, with the value of Aces reduced from 11 to 1 to ensure the player's

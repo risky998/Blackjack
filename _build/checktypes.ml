@@ -21,7 +21,6 @@ module DeckCheck : DeckSig = Deck
 module type PlayerSig = sig
   type t
   type hand = Deck.card list
-  val get_value_hand : hand -> int -> int 
   val init_player : string -> int -> bool -> bool -> t
   val player_hand : t -> hand
   val total_money : t -> int

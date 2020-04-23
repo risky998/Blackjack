@@ -20,7 +20,7 @@ let rec remove_spaces = function
   | [] -> []
   | h::t -> 
     if h = "" then remove_spaces t
-    else h::remove_spaces t
+    else String.lowercase_ascii h::remove_spaces t
 
 let parse str =
   let str_list = String.split_on_char ' ' str |> remove_spaces in 
