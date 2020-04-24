@@ -24,6 +24,8 @@ let hit_stay_strategy c player =
    | p when p = 9 && c >= 3 && c <= 5 -> Double
    | _ -> Hit *)
 
+(* More code will be added here to describe the soft strategy for the AI when they have exactly two cards and the dealer's top card is being shown. This will mean that Split and Double need to be functional *)
+
 let probability_bust player = 
   let value = Player.value_hand player in 
   match value with
