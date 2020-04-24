@@ -20,6 +20,7 @@ let rec get_dealer_hand_value players =
   | [] -> failwith "Dealer was not found"
   | h::t -> if (is_dealer h) then value_hand h else get_dealer_hand_value t 
 
+
 let print_cards = function
   | [] -> ""
   | [s] -> s
