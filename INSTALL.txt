@@ -1,0 +1,5 @@
+This file contains instructions on installing and interacting with the current blackjack game. 
+
+Similar to 3110 assignment, once you have downloaded and unzipped the source code from CMS, run "make build". 
+
+After this, run make play. All the functionality is not complete yet. When the terminal prompts you 

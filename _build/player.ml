@@ -10,7 +10,8 @@ type t = {
   player_bet : int;
   dealer: bool;
   ai: bool;
-  (* current_turn : bool *)
+  current_turn : bool;
+  actions: int
 }
 
 (** [get_value_hand hand acc] is the value of the cards in a player's hand. *)
@@ -30,6 +31,8 @@ let init_player j = {
   player_bet = 0;
   dealer = j |> member "dealer" |> to_bool;
   ai = j |> member "ai" |> to_bool;
+  current_turn = j |> member "current_turn" |> to_bool;
+  actions = 0;
 }
 
 let player_hand st = st.player_hand
@@ -44,12 +47,16 @@ let is_ai st = st.ai
 
 let is_dealer st = st.dealer
 
+let get_bet st = st.player_bet
+
+let player_actions st = st.actions
+
+let is_current_turn st = st.current_turn
+
 let set_dealer st = {st with dealer = true}
 
-let bet money st = 
-  if (money <= st.total_money) then 
-    {st with total_money = st.total_money - money; player_bet = money}
-  else raise (Failure "Not enough money")
+let player_bet money st = 
+  {st with total_money = st.total_money - money; player_bet = money}
 
 (* If they player wins, they win twice what they bet *)
 let player_win st =  

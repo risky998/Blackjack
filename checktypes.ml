@@ -28,11 +28,14 @@ module type PlayerSig = sig
   val player_hand : t -> Deck.card list
   val total_money : t -> int
   val value_hand : t -> int
+  val player_actions: t->int
   val get_id : t -> string
   val is_ai : t -> bool
   val is_dealer : t -> bool
+  val get_bet : t -> int
+  val is_current_turn : t -> bool
   val set_dealer : t -> t
-  val bet : int  -> t -> t
+  val player_bet: int -> t -> t
   val player_win: t -> t
   val draw_card : Deck.card -> t -> t
   val draw_card_dealer : Deck.card -> t -> t
@@ -59,16 +62,15 @@ module CommandCheck : CommandSig = Command
 module type StateSig = sig
   type t 
   type result = Legal of t | Illegal
-  val replace_player : Player.t -> Player.t list -> Player.t list
-  val first_draw_2 : t -> t
   val init_state : Yojson.Basic.t -> t
-  val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
   val hit : Player.t -> t -> result
+  val bet : int -> Player.t -> t -> result
   val player_won: Player.t -> Player.t list -> bool 
   val player_bust: Player.t -> Player.t list -> bool 
   val player_blackjack: Player.t -> Player.t list -> bool 
   val get_player: t -> Player.t
   val get_dealer: t -> Player.t
+  val get_other_players: t -> Player.t list
 end
 
 module StateCheck : StateSig = State

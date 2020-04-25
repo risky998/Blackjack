@@ -31,14 +31,17 @@ val get_id : t -> string
 (** [is_ai st] is whether the player is an AI in state [st]. *)
 val is_ai : t -> bool
 
-(** [is_deaer st] is whether the player is a dealer in state [st]. *)
+(** [is_dealer st] is whether the player is a dealer in state [st]. *)
 val is_dealer : t -> bool
+
+(** [player_actions st] is the number of actions made by the player [st]. *)
+val player_actions: t->int
 
 (** [set_dealer st] is sets the player as a dealer in state [st]. *)
 val set_dealer : t -> t
 
-(** [bet money st] is the new state after a player bets [money] on a play. *)
-val bet : int  -> t -> t
+(**  [player_bet money st] is the new state after a player bets [money] on a play. *)
+val player_bet : int -> t -> t
 
 (** [player_win st] is the new state if the player wins a hand *)
 val player_win: t -> t
@@ -51,3 +54,7 @@ val draw_card : Deck.card -> t -> t
 (** [draw_card card st] is the new state of the dealer after drawing a 
     card. The dealer will only draw if hand is less than or equal 16 in value.  *)
 val draw_card_dealer : Deck.card -> t -> t
+
+val get_bet : t -> int
+val is_current_turn : t -> bool
+

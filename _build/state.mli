@@ -13,27 +13,14 @@ type t
 (* The type representing the result of an attempted move. *)
 type result = Legal of t | Illegal
 
-(** [replace_player p players] is a new list of players with the new state of
-    player p replaced in players.  *)
-val replace_player : Player.t -> Player.t list -> Player.t list
-
 (** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
 val get_dealer_hand_value :  Player.t list -> int
 
-(** [first_draw_2 g players] is the new state of the game after each player
-    has drawn their first 2 cards and those cards drawn are removed from the 
-    deck.  *)
-val first_draw_2 : t -> t
 
 (** [init_state] is the initial state of the game after each player
     has drawn their first 2 cards and those cards drawn are removed from the 
     deck. *)
 val init_state : Yojson.Basic.t -> t
-
-(** [update_player card p players] is a new list of players after a player [p]
-    has drawn a card [card] and his corresponding hand and hand value are 
-    updated in the new player list. *)
-val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
 
 (** [hit player g] is [r] after a  player [player] chooses to hit. 
     If the deck still has available cards to be 
@@ -41,6 +28,8 @@ val update_player : Deck.card -> Player.t -> Player.t list -> Player.t list
     hand and hand value updated, and the drawn card removed from the deck.  
     Otherwise, the result is [Illegal]. *)
 val hit : Player.t -> t -> result
+
+val bet : int -> Player.t -> t -> result
 
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is higher than the dealer's hand value  *)
 val player_won: Player.t -> Player.t list -> bool 
@@ -55,3 +44,5 @@ val player_blackjack: Player.t -> Player.t list -> bool
 val get_player: t -> Player.t
 
 val get_dealer: t -> Player.t
+
+val get_other_players: t -> Player.t list
