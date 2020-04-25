@@ -22,9 +22,7 @@ let size (deck:t) : int = List.length deck
 let full_deck (unit:unit) : t = ((List.concat (List.map (fun rank -> List.map (fun suit -> (rank, suit)) suits) ranks)))
 
 let shuffle deck =
-  let new_deck = List.map (fun card -> (Random.bits (), card)) deck in
-  let sort_deck = List.sort compare new_deck in
-  List.map (fun weighted_card -> snd weighted_card) sort_deck
+  QCheck.Gen.(generate1 (shuffle_l deck))
 
 let points ((rank, suit):card) : int =
   match rank with

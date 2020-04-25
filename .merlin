@@ -1,4 +1,5 @@
 B _build
 PKG oUnit
 PKG yojson
+PKG qcheck
 PKG ANSITerminal

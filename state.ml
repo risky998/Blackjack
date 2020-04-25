@@ -9,6 +9,9 @@ type t = {
 
 type result = Legal of t | Illegal
 
+let get_players g = g.players
+
+(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
 let rec get_dealer_hand_value players = 
   match players with 
   | [] -> failwith "Dealer was not found"
@@ -22,12 +25,6 @@ let print_cards = function
 let init_state json = 
   { players = json |> member "players" |> to_list |> List.map init_player;
     deck = Deck.(full_deck () |> shuffle) } 
-
-(* let turn_complete players = 
-   match players with 
-   | [] -> true
-   | h::t ->  *)
-
 
 (** [update_player card p players] is a new list of players after a player [p]
     has drawn a card [card] and his corresponding hand and hand value are 
@@ -54,6 +51,14 @@ let rec replace_player p players =
   | [] -> []
   | h::t -> if Player.get_id p = Player.get_id h then p::t
     else h::replace_player p t
+
+(* let turn st stays= 
+   if stays is 4 then return st
+   otherwise -> call dealer function 
+   call ai function 
+   prompt player for action + match player action
+*)
+
 
 let bet money player g = 
   let player_money = total_money player in
@@ -113,3 +118,15 @@ let get_dealer g =
     | h::t -> if not (is_dealer h) then h
       else get_dealer_helper t
   in get_dealer_helper g.players
+
+let dealer_info g = 
+  let dealer = get_dealer g in
+  let dealer_hand = player_hand dealer in
+  let dealer_len = List.length dealer_hand in
+  if dealer_len = 0 then ("", 0) else (string_of_card (List.nth dealer_hand (dealer_len-1)), dealer_len)
+
+let top_card_value g =
+  let dealer = get_dealer g in
+  let dealer_hand = player_hand dealer in
+  let dealer_len = List.length dealer_hand in
+  if dealer_len = 0 then 0 else Deck.points (List.nth dealer_hand (dealer_len-1)) 

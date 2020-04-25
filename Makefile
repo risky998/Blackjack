@@ -1,4 +1,4 @@
-MODULES=authors command deck player main state
+MODULES=authors command deck player main state ai
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

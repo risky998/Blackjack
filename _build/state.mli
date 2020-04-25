@@ -13,9 +13,7 @@ type t
 (* The type representing the result of an attempted move. *)
 type result = Legal of t | Illegal
 
-(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
-val get_dealer_hand_value :  Player.t list -> int
-
+val get_players : t -> Player.t list
 
 (** [init_state] is the initial state of the game after each player
     has drawn their first 2 cards and those cards drawn are removed from the 
@@ -46,3 +44,7 @@ val get_player: t -> Player.t
 val get_dealer: t -> Player.t
 
 val get_other_players: t -> Player.t list
+
+val dealer_info : t -> string * int
+
+val top_card_value : t -> int

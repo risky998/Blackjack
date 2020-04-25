@@ -23,7 +23,6 @@ module DeckCheck : DeckSig = Deck
 
 module type PlayerSig = sig
   type t
-  val get_value_hand : Deck.card list -> int -> int 
   val init_player : Yojson.Basic.t -> t
   val player_hand : t -> Deck.card list
   val total_money : t -> int
@@ -62,6 +61,7 @@ module CommandCheck : CommandSig = Command
 module type StateSig = sig
   type t 
   type result = Legal of t | Illegal
+  val get_players : t -> Player.t list
   val init_state : Yojson.Basic.t -> t
   val hit : Player.t -> t -> result
   val bet : int -> Player.t -> t -> result
@@ -71,9 +71,19 @@ module type StateSig = sig
   val get_player: t -> Player.t
   val get_dealer: t -> Player.t
   val get_other_players: t -> Player.t list
+  val dealer_info : t -> string * int
+  val top_card_value : t -> int
 end
 
 module StateCheck : StateSig = State
+
+module type AiSig = sig
+  val dealer_strategy: Player.t -> Command.command
+  val hit_stay_strategy: int->Player.t-> Command.command
+  val probability_bust: Player.t-> float
+end
+
+module AiCheck : AiSig = Ai
 
 module type AuthorsSig = sig
   val hours_worked : int
