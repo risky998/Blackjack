@@ -168,11 +168,12 @@ let rec turn game players =
           turn (game_interface h game) t
         end
   else 
-    begin
-      ANSITerminal.(print_string [blue] "\nGame Over!\n");
-      exit 0 
-    end
-(* reset game *)
+    (* begin
+       (* ANSITerminal.(print_string [blue] "\nGame Over!\n"); *)
+       (* exit 0  *)
+       end *)
+    let new_game = reset game in 
+    turn (new_game) (get_players (new_game))
 
 (** [play_game f] starts the adventure in file [f]. *)
 let rec play_game game =

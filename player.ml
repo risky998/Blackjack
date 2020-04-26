@@ -57,11 +57,11 @@ let player_bet money st =
 
 (* If they player wins, they win twice what they bet *)
 let player_win st =  
-  {st with total_money = st.total_money + 2*st.player_bet; player_bet = 0}
+  {st with total_money = st.total_money + 2*st.player_bet; player_bet = 0; player_hand = []; value_hand = 0}
 
 (* If the player loses, they do not gain back the money that they bet.  *)
 let player_lose st =  
-  {st with player_bet = 0}
+  {st with player_bet = 0; player_hand = []; value_hand = 0}
 
 (** [reduce_ace_below_21 hand] is the new hand of the player after changing 
     the values of as few Aces as possible so that the value of the new hand is 

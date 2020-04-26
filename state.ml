@@ -94,11 +94,11 @@ let bet money player g =
 
 (* let next_turn players g =  *)
 
-let rec player_won p players = 
-  let dealer_value = get_dealer_hand_value players in 
+let rec player_won dealer_value p players = 
+  (* let dealer_value = get_dealer_hand_value players in  *)
   match players with 
   | [] -> false
-  | h::t -> if (Player.get_id p = Player.get_id h) && (dealer_value < value_hand h) then true else false
+  | h::t -> if (Player.get_id p = Player.get_id h) && (dealer_value < value_hand h) then true else player_won dealer_value p t
 
 (* let rec player_bust p players =  
    match players with 
@@ -150,8 +150,11 @@ let top_card_value g =
   if dealer_len = 0 then 0 else Deck.points (List.nth dealer_hand (dealer_len-1)) 
 
 let reset game = 
+  let dealer_value = get_dealer_hand_value game.players in 
   let rec reward_reset_state players= 
     match players with 
     |[] -> players 
-    | h::t -> if (player_won h players) then player_win h :: (reward_reset_state t) else player_lose h :: (reward_reset_state t)
+    | h::t -> if not (is_dealer h) then 
+        if (player_won dealer_value h players) then player_win h :: (reward_reset_state t) else player_lose h :: (reward_reset_state t)
+      else h::reward_reset_state t
   in {players = reward_reset_state game.players; deck = Deck.(full_deck () |> shuffle); stayed = []}

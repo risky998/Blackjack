@@ -39,7 +39,7 @@ val stayed_length : t -> int
 val bet : int -> Player.t -> t -> result
 
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is higher than the dealer's hand value  *)
-val player_won: Player.t -> Player.t list -> bool 
+val player_won: int -> Player.t -> Player.t list -> bool 
 
 (** [player_won p players] returns whether the player [p] busted, i.e their hand value is higher than 21  *)
 val player_bust: Player.t -> bool 
