@@ -42,7 +42,7 @@ val bet : int -> Player.t -> t -> result
 val player_won: Player.t -> Player.t list -> bool 
 
 (** [player_won p players] returns whether the player [p] busted, i.e their hand value is higher than 21  *)
-val player_bust: Player.t -> Player.t list -> bool 
+val player_bust: Player.t -> bool 
 
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is 21 *)
 val player_blackjack: Player.t -> Player.t list -> bool 

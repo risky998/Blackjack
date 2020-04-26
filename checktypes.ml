@@ -69,7 +69,7 @@ module type StateSig = sig
   val in_stayed: Player.t -> t -> bool
   val stayed_length: t -> int 
   val player_won: Player.t -> Player.t list -> bool 
-  val player_bust: Player.t -> Player.t list -> bool 
+  val player_bust: Player.t -> bool 
   val player_blackjack: Player.t -> Player.t list -> bool 
   val get_player: t -> Player.t
   val get_dealer: t -> Player.t

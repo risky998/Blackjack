@@ -5,7 +5,7 @@ open Yojson.Basic.Util
 type t = {
   players: Player.t list;
   deck: Deck.t;
-  stayed: Player.t list;
+  stayed: string list;
 }
 
 type result = Legal of t | Illegal
@@ -37,33 +37,32 @@ let rec update_player card p players =
   | h::t -> if p = h then (Player.draw_card card p)::t
     else h::(update_player card p t) 
 
-let rec stay player g =
+let stay player g =
   {
     players = g.players;
     deck = g.deck;
-    stayed = player::g.stayed;
+    stayed = (get_id player)::g.stayed;
   }
 
 let in_stayed player game = 
   let rec in_stayed_helper player lst = 
     match lst with 
     | [] -> false
-    | h::t -> if (player = h) then true else in_stayed_helper player t
+    | h::t -> if (get_id player = h) then true else in_stayed_helper player t
   in in_stayed_helper player (game.stayed) 
 
 let stayed_length game = 
   List.length (game.stayed)
 
 let rec hit player g =
-  if (in_stayed player g) then Illegal else
-    match Deck.draw g.deck with
-    | None -> Illegal
-    | Some (card, remaining) -> 
-      Legal {
-        players = update_player card player g.players;
-        deck = remaining;
-        stayed = g.stayed;
-      }
+  match Deck.draw g.deck with
+  | None -> Illegal
+  | Some (card, remaining) -> 
+    Legal {
+      players = update_player card player g.players;
+      deck = remaining;
+      stayed = g.stayed;
+    }
 
 (** [replace_player p players] is a new list of players with the new state of
     player p replaced in players.  *)
@@ -91,11 +90,10 @@ let bet money player g =
     let new_player_draw = Player.draw_card (List.nth cards_2 0) new_player_bet |> 
                           Player.draw_card (List.nth cards_2 1) in
     let new_players = replace_player new_player_draw g.players in
-    Legal {
-      players = new_players;
-      deck = remaining_deck;
-      stayed = g.stayed
-    }
+    Legal {g with
+           players = new_players;
+           deck = remaining_deck;
+          }
   else Illegal
 
 (* let next_turn players g =  *)
@@ -106,10 +104,13 @@ let rec player_won p players =
   | [] -> false
   | h::t -> if (Player.get_id p = Player.get_id h) && (dealer_value < value_hand h) then true else false
 
-let rec player_bust p players =  
-  match players with 
-  | [] -> false
-  | h::t -> if (Player.get_id p = Player.get_id h) && (21 < value_hand h) then true else false
+(* let rec player_bust p players =  
+   match players with 
+   | [] -> false
+   | h::t -> if (Player.get_id p = Player.get_id h) && (21 < value_hand h) then true else false *)
+
+let player_bust player = 
+  if value_hand player > 21 then true else false
 
 let rec player_blackjack p players = 
   match players with 

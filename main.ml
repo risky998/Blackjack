@@ -29,7 +29,8 @@ let ai_interface ai game =
       begin 
         match hit ai game with
         | Legal new_game -> 
-          ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" hits\n"));          new_game
+          ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" hits\n"));          
+          new_game
         | Illegal -> ANSITerminal.(print_string [yellow] 
                                      "\nError: No cards available!\n");
           game
@@ -38,11 +39,15 @@ let ai_interface ai game =
 
 let dealer_interface dealer game = 
   match dealer_strategy dealer with
-  | Stay -> stay dealer game
+  | Stay ->         
+    ANSITerminal.(print_string [yellow] ("\nDealer stays\n"));  
+    stay dealer game
   | Hit -> 
     begin 
       match hit dealer game with
-      | Legal new_game -> new_game
+      | Legal new_game -> 
+        ANSITerminal.(print_string [yellow] ("\nDealer hits\n"));  
+        new_game
       | Illegal -> ANSITerminal.(print_string [yellow] 
                                    "\nError: No cards available!\n");
         game
@@ -140,21 +145,35 @@ let rec turn game players =
     | [] -> game
     (* | h::t when (in_stayed h game) -> turn game t *)
     | h::t when (is_ai h && not (is_dealer h))-> 
-      ANSITerminal.(print_string [blue]   
-                      ("-------------------------------------------------"^
-                       "\n\nIt is Player " ^(Player.get_id h)^ "'s turn now.\n"));
-      turn (ai_interface h game) t
+      if (player_bust h) || (in_stayed h game) then turn game t else 
+        begin
+          ANSITerminal.(print_string [blue]   
+                          ("-------------------------------------------------"^
+                           "\n\nIt is Player " ^(Player.get_id h)^ "'s turn now.\n"));
+          turn (ai_interface h game) t
+        end
     | h::t when is_dealer h -> 
-      ANSITerminal.(print_string [blue]   
-                      ("-------------------------------------------------" ^
-                       "\n\nIt is dealer's turn now.\n"));
-      turn (dealer_interface h game) t
+      if player_bust h || (in_stayed h game) then turn game t else 
+        begin
+          ANSITerminal.(print_string [blue]   
+                          ("-------------------------------------------------" ^
+                           "\n\nIt is dealer's turn now.\n"));
+          turn (dealer_interface h game) t
+        end
     | h::t -> 
-      ANSITerminal.(print_string [blue]   
-                      ("-------------------------------------------------" ^
-                       "\n\nIt is your turn now.\n"));
-      turn (game_interface h game) t
-  else reset game
+      if player_bust h || (in_stayed h game) then turn game t else 
+        begin
+          ANSITerminal.(print_string [blue]   
+                          ("-------------------------------------------------" ^
+                           "\n\nIt is your turn now.\n"));
+          turn (game_interface h game) t
+        end
+  else 
+    begin
+      ANSITerminal.(print_string [blue] "\nGame Over!\n");
+      exit 0 
+    end
+(* reset game *)
 
 (** [play_game f] starts the adventure in file [f]. *)
 let rec play_game game =

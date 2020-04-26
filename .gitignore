@@ -1,3 +1,4 @@
 *.code-workspace
 *.byte
 _build/
+*.DS_Store
