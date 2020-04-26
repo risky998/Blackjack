@@ -15,7 +15,7 @@ let ai_interface ai game =
   if ai_bet = 0 then 
     match bet 20 ai game with
     | Legal new_game -> 
-      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^"bets"^(string_of_int 20)^"\n"));
+      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" bets "^(string_of_int 20)^"\n"));
       new_game
     | Illegal -> ANSITerminal.(print_string [yellow] 
                                  "\nError: Not enough money!\n");
@@ -23,13 +23,13 @@ let ai_interface ai game =
   else let top_card_val = State.top_card_value game in
     match hit_stay_strategy top_card_val ai with
     | Stay -> 
-      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^"stays\n"));
+      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" stays\n"));
       game
     | Hit -> 
       begin 
         match hit ai game with
         | Legal new_game -> 
-          ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^"hits\n"));          new_game
+          ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" hits\n"));          new_game
         | Illegal -> ANSITerminal.(print_string [yellow] 
                                      "\nError: No cards available!\n");
           game
@@ -51,17 +51,16 @@ let dealer_interface dealer game =
 
 (** [game_interface st] is the game interface that prompts the user
     to enter a command and updates the state [st] accordingly. *)
-let rec game_interface game : State.t= 
-  let main_player = get_player game in
-  let hand = List.map(fun card -> string_of_card card) (player_hand main_player) in
+let rec game_interface player game : State.t= 
+  let hand = List.map(fun card -> string_of_card card) (player_hand player) in
   ANSITerminal.
     (print_string [blue] ("Cards: ["^
                           print_cards (hand)^"]\n"));
-  let player_value = value_hand main_player in
+  let player_value = value_hand player in
   ANSITerminal.
     (print_string [blue] ("Hand value: "^
                           (string_of_int player_value)^"\n"));
-  let player_money = total_money main_player in
+  let player_money = total_money player in
   ANSITerminal.
     (print_string [blue] ("Money: "^
                           (string_of_int player_money)^"\n"));
@@ -76,7 +75,7 @@ let rec game_interface game : State.t=
       ANSITerminal.
         (print_string [blue] ("Player "^(get_id p)^"'s hand: "^
                               (print_cards other_player_hand)^"\n"));) other_players;
-  let player_bet = get_bet main_player in
+  let player_bet = get_bet player in
   if player_bet = 0 then
     match read_line () with
     (* | exception End_of_file -> ()      *)
@@ -85,25 +84,25 @@ let rec game_interface game : State.t=
         match (parse command) with
         | exception Empty -> 
           ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
-          game_interface game
+          game_interface player game
         | exception Malformed -> 
           ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
-          game_interface game
+          game_interface player game
         | Quit -> 
           ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
           exit 0
         | Bet money -> 
           begin 
-            match bet money main_player game with
+            match bet money player game with
             | Legal new_game -> 
               new_game
             | Illegal -> ANSITerminal.(print_string [yellow] 
                                          "\nError: Not enough money!\n");
-              game_interface game
+              game_interface player game
           end
         | _ -> 
           ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
-          game_interface game
+          game_interface player game
       end
   else 
     match read_line () with
@@ -114,63 +113,49 @@ let rec game_interface game : State.t=
         | exception Empty -> 
           ANSITerminal.(print_string [yellow] 
                           "\nError: Please enter a command!\n");
-          game_interface game
+          game_interface player game
         | exception Malformed -> 
           ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
-          game_interface game
+          game_interface player game
         | Quit -> 
           ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
           exit 0
         | Hit -> 
           begin 
-            match hit main_player game with
+            match hit player game with
             | Legal new_game -> new_game
             | Illegal -> ANSITerminal.(print_string [yellow] 
                                          "\nError: No cards available!\n");
-              game_interface game                        
+              game_interface player game                        
           end
         | _ -> 
           ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
-          game_interface game
+          game_interface player game
       end
 
-(** [loop_through_players players] is a game state of blackjack after going 
-    through each player in [players] and 
-    giving everyone a turn. *)
-(* let rec loop_through_players game = function
-   | [] -> game
-   | p::ps when Player.is_cpu p -> 
-    let () = ANSITerminal.(print_string [blue] (
-        "-------------------------------------------------" ^
-        "\n\nIt is " ^ Player.get_name p ^ "'s turn now.\n")) in
-    loop_through_players (play_cpu game (Player.get_id p)) ps
-   | p::ps -> 
-    if Player.is_dealer p then
-      let () = ANSITerminal.(print_string [blue] (dealers_turn))  in
-      play_dealer game p
-    else 
-      let () = ANSITerminal.(print_string [blue] (
-          "-------------------------------------------------" ^
-          "\n\n" ^  Player.get_name p ^ start_player_turn));
-        print_string "> ";
-      in
-      match read_line () with
-      |"quit" -> print_endline quit; exit 0
-      |_ -> loop_through_players (play_turn game (Player.get_id p)) ps *)
-
 let rec turn game players =
-  let rec turn_helper game players = 
-    match players with 
-    | [] -> game
-    | h::t when is_ai h -> turn_helper (ai_interface h game) t;
-    | h::t when is_dealer h -> turn_helper (dealer_interface h game) t;
-    | h::t -> turn_helper (game_interface game) t;
-  in turn_helper game players
+  match players with
+  | [] -> game
+  | h::t when (is_ai h && not (is_dealer h))-> 
+    ANSITerminal.(print_string [blue]   
+                    ("-------------------------------------------------"^
+                     "\n\nIt is Player " ^(Player.get_id h)^ "'s turn now.\n"));
+    turn (ai_interface h game) t
+  | h::t when is_dealer h -> 
+    ANSITerminal.(print_string [blue]   
+                    ("-------------------------------------------------" ^
+                     "\n\nIt is dealer's turn now.\n"));
+    turn (dealer_interface h game) t
+  | h::t -> 
+    ANSITerminal.(print_string [blue]   
+                    ("-------------------------------------------------" ^
+                     "\n\nIt is your turn now.\n"));
+    turn (game_interface h game) t
 
 (** [play_game f] starts the adventure in file [f]. *)
-let play_game f =
-  let game = init_state (Yojson.Basic.from_file f) in
-  turn game (get_players game)
+let rec play_game game =
+  let new_game = turn game (get_players game) in
+  play_game new_game
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -180,7 +165,9 @@ let main () =
   print_string  "> ";
   match read_line () with
   | exception End_of_file -> ()
-  | file_name -> play_game file_name
+  | file_name -> 
+    let game = init_state (Yojson.Basic.from_file file_name) in 
+    play_game game
 
 (* Execute the game engine. *)
 let () = main ()

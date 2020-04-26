@@ -9,6 +9,9 @@ type t = {
 
 type result = Legal of t | Illegal
 
+let get_players g = g.players
+
+(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
 let rec get_dealer_hand_value players = 
   match players with 
   | [] -> failwith "Dealer was not found"
@@ -22,12 +25,6 @@ let print_cards = function
 let init_state json = 
   { players = json |> member "players" |> to_list |> List.map init_player;
     deck = Deck.(full_deck () |> shuffle) } 
-
-(* let turn_complete players = 
-   match players with 
-   | [] -> true
-   | h::t ->  *)
-
 
 (** [update_player card p players] is a new list of players after a player [p]
     has drawn a card [card] and his corresponding hand and hand value are 
