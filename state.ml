@@ -38,11 +38,7 @@ let rec update_player card p players =
     else h::(update_player card p t) 
 
 let stay player g =
-  {
-    players = g.players;
-    deck = g.deck;
-    stayed = (get_id player)::g.stayed;
-  }
+  { g with stayed = (get_id player)::g.stayed;}
 
 let in_stayed player game = 
   let rec in_stayed_helper player lst = 
@@ -59,9 +55,9 @@ let rec hit player g =
   | None -> Illegal
   | Some (card, remaining) -> 
     Legal {
+      g with
       players = update_player card player g.players;
       deck = remaining;
-      stayed = g.stayed;
     }
 
 (** [replace_player p players] is a new list of players with the new state of

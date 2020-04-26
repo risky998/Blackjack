@@ -17,9 +17,7 @@ let ai_interface ai game =
     | Legal new_game -> 
       ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" bets "^(string_of_int 20)^"\n"));
       new_game
-    | Illegal -> ANSITerminal.(print_string [yellow] 
-                                 "\nError: Not enough money!\n");
-      game
+    | Illegal -> game
   else let top_card_val = State.top_card_value game in
     match hit_stay_strategy top_card_val ai with
     | Stay -> 
@@ -31,9 +29,7 @@ let ai_interface ai game =
         | Legal new_game -> 
           ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" hits\n"));          
           new_game
-        | Illegal -> ANSITerminal.(print_string [yellow] 
-                                     "\nError: No cards available!\n");
-          game
+        | Illegal -> game
       end
     | _ -> game
 
@@ -48,9 +44,7 @@ let dealer_interface dealer game =
       | Legal new_game -> 
         ANSITerminal.(print_string [yellow] ("\nDealer hits\n"));  
         new_game
-      | Illegal -> ANSITerminal.(print_string [yellow] 
-                                   "\nError: No cards available!\n");
-        game
+      | Illegal -> game
     end
   | _ -> game
 
@@ -142,10 +136,13 @@ let rec game_interface player game : State.t=
 let rec turn game players =
   if stayed_length game < 4 then
     match players with
-    | [] -> game
-    (* | h::t when (in_stayed h game) -> turn game t *)
-    | h::t when (is_ai h && not (is_dealer h))-> 
-      if (player_bust h) || (in_stayed h game) then turn game t else 
+    | [] -> begin
+        ANSITerminal.(print_string [blue] "CRASH");
+        turn game (get_players game)
+      end
+    | h::t when (is_ai h && not (is_dealer h)) -> 
+      if (player_bust h || in_stayed h game) then turn game t 
+      else 
         begin
           ANSITerminal.(print_string [blue]   
                           ("-------------------------------------------------"^
@@ -153,7 +150,8 @@ let rec turn game players =
           turn (ai_interface h game) t
         end
     | h::t when is_dealer h -> 
-      if player_bust h || (in_stayed h game) then turn game t else 
+      if (player_bust h || in_stayed h game) then turn game t 
+      else 
         begin
           ANSITerminal.(print_string [blue]   
                           ("-------------------------------------------------" ^
@@ -161,7 +159,8 @@ let rec turn game players =
           turn (dealer_interface h game) t
         end
     | h::t -> 
-      if player_bust h || (in_stayed h game) then turn game t else 
+      if (player_bust h || in_stayed h game) then turn game t 
+      else 
         begin
           ANSITerminal.(print_string [blue]   
                           ("-------------------------------------------------" ^

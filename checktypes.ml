@@ -27,7 +27,6 @@ module type PlayerSig = sig
   val player_hand : t -> Deck.card list
   val total_money : t -> int
   val value_hand : t -> int
-  val player_actions: t->int
   val get_id : t -> string
   val is_ai : t -> bool
   val is_dealer : t -> bool

@@ -34,9 +34,6 @@ val is_ai : t -> bool
 (** [is_dealer st] is whether the player is a dealer in state [st]. *)
 val is_dealer : t -> bool
 
-(** [player_actions st] is the number of actions made by the player [st]. *)
-val player_actions: t->int
-
 (** [set_dealer st] is sets the player as a dealer in state [st]. *)
 val set_dealer : t -> t
 
