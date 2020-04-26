@@ -71,8 +71,8 @@ let deck_tests =
 
     "testing points" >:: (fun _ -> assert_equal 2 (points (Two, Clubs)));
 
-    "testing draw_start" >:: (fun _ -> assert_equal ([(Ace 11, Spades); (Two, Clubs)], [(Three, Diamonds)])
-                                 (draw_start [(Two, Clubs); (Four, Hearts); (Six, Hearts)]));
+    "testing draw_start" >:: (fun _ -> assert_equal ([(Two, Clubs); (Three, Diamonds)], [(Four, Hearts)])
+                                 (draw_start [(Two, Clubs); (Three, Diamonds); (Four, Hearts)]));
 
     "testing reduce_ace1" >:: (fun _ -> assert_equal 1 ([(Ace 11, Spades); (Ace 11, Clubs)] |> reduce_ace |> List.hd |> points));
 
