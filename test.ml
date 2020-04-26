@@ -1,5 +1,6 @@
 open OUnit2
 open Deck
+open Player
 open State
 
 (********************************************************************
@@ -71,8 +72,8 @@ let deck_tests =
 
     "testing points" >:: (fun _ -> assert_equal 2 (points (Two, Clubs)));
 
-    "testing draw_start" >:: (fun _ -> assert_equal ([(Two, Clubs); (Three, Diamonds)], [(Four, Hearts)])
-                                 (draw_start [(Two, Clubs); (Three, Diamonds); (Four, Hearts)]));
+    (*"testing draw_start" >:: (fun _ -> assert_equal ([(Two, Clubs); (Three, Diamonds)], [(Four, Hearts)])
+                                 (draw_start [(Two, Clubs); (Three, Diamonds); (Four, Hearts)])); *)
 
     "testing reduce_ace1" >:: (fun _ -> assert_equal 1 ([(Ace 11, Spades); (Ace 11, Clubs)] |> reduce_ace |> List.hd |> points));
 
@@ -83,11 +84,31 @@ let deck_tests =
 
     (* "testing draw" >:: (fun _ -> assert_equal ([(Ace 11, Spades)], [(Two, Clubs); (Three, Diamonds)]) 
                            (draw [(Ace 11, Spades); (Two, Clubs), (Three, Diamonds)]));    *)
+
+    "testing string_of_card" >:: (fun _ -> assert_equal "A♣" (string_of_card (Ace 11, Clubs)));
   ]
 
-let command_tests =
+let st = {
+  id = "Kazuya";
+  player_hand = [(Ace 11, Spades); (Two, Clubs); (Three, Diamonds)];
+}
+
+let player_tests =
   [
-    (* TODO: add tests for the Command module here *)
+    "testing get_value_hand" >:: (fun _ -> assert_equal 11 (get_value_hand [(Ace 11, Clubs)] 0));
+
+    "testing player_hand" >:: (fun _ -> assert_equal 11 (player_hand st));
+
+    "testing total_money" >:: (fun _ -> assert_equal 11 (total_money st));
+
+    "testing value_hand" >:: (fun _ -> assert_equal 11 (value_hand st));
+
+    "testing get_id" >:: (fun _ -> assert_equal 11 (get_id st));
+
+    "testing is_ai" >:: (fun _ -> assert_equal 11 (is_ai st));
+
+    "testing is_dealer" >:: (fun _ -> assert_equal 11 (is_dealer st));
+
   ]
 
 let state_tests =
@@ -98,7 +119,7 @@ let state_tests =
 let suite =
   "test suite for Blacjack"  >::: List.flatten [
     deck_tests;
-    command_tests;
+    player_tests;
     state_tests;
   ]
 
