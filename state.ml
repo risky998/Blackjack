@@ -50,14 +50,22 @@ let in_stayed player game =
 let stayed_length game = 
   List.length (game.stayed)
 
+(** DOCUMENTATION*)
+let rec find_player_hand_value p players = 
+  match players with
+  | [] -> 0
+  | h::t -> if p = get_id h then value_hand h else find_player_hand_value p t
+
 let rec hit player g =
   match Deck.draw g.deck with
   | None -> Illegal
   | Some (card, remaining) -> 
+    let new_players = update_player card player g.players in 
+    let hand = find_player_hand_value (get_id player) new_players in
     Legal {
-      g with
-      players = update_player card player g.players;
+      players = new_players;
       deck = remaining;
+      stayed = if (hand > 21) then (get_id player)::g.stayed else g.stayed
     }
 
 (** [replace_player p players] is a new list of players with the new state of

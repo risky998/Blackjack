@@ -136,49 +136,39 @@ let rec game_interface player game : State.t=
 let rec turn game players =
   if stayed_length game < 4 then
     match players with
-    | [] -> begin
-        ANSITerminal.(print_string [blue] "CRASH");
-        turn game (get_players game)
-      end
+    | [] -> 
+      ANSITerminal.(print_string [blue] (string_of_int (List.length (get_players game))));
+      turn game (get_players game)
     | h::t when (is_ai h && not (is_dealer h)) -> 
-      if (player_bust h || in_stayed h game) then turn game t 
+      if (in_stayed h game) then turn game t 
       else 
-        begin
-          ANSITerminal.(print_string [blue]   
-                          ("-------------------------------------------------"^
-                           "\n\nIt is Player " ^(Player.get_id h)^ "'s turn now.\n"));
-          turn (ai_interface h game) t
-        end
+        ANSITerminal.(print_string [blue]   
+                        ("-------------------------------------------------"^
+                         "\n\nIt is Player " ^(Player.get_id h)^ "'s turn now.\n"));
+      turn (ai_interface h game) t
     | h::t when is_dealer h -> 
-      if (player_bust h || in_stayed h game) then turn game t 
+      if (in_stayed h game) then turn game t 
       else 
-        begin
-          ANSITerminal.(print_string [blue]   
-                          ("-------------------------------------------------" ^
-                           "\n\nIt is dealer's turn now.\n"));
-          turn (dealer_interface h game) t
-        end
+        ANSITerminal.(print_string [blue]   
+                        ("-------------------------------------------------" ^
+                         "\n\nIt is dealer's turn now.\n"));
+      turn (dealer_interface h game) t
     | h::t -> 
-      if (player_bust h || in_stayed h game) then turn game t 
+      if (in_stayed h game) then turn game t 
       else 
-        begin
-          ANSITerminal.(print_string [blue]   
-                          ("-------------------------------------------------" ^
-                           "\n\nIt is your turn now.\n"));
-          turn (game_interface h game) t
-        end
+        ANSITerminal.(print_string [blue]   
+                        ("-------------------------------------------------" ^
+                         "\n\nIt is your turn now.\n"));
+      turn (game_interface h game) t
   else 
-    (* begin
-       (* ANSITerminal.(print_string [blue] "\nGame Over!\n"); *)
-       (* exit 0  *)
-       end *)
     let new_game = reset game in 
+    ANSITerminal.(print_string [blue]   
+                    ("New Game"));
     turn (new_game) (get_players (new_game))
 
 (** [play_game f] starts the adventure in file [f]. *)
-let rec play_game game =
-  let new_game = turn game (get_players game) in
-  play_game new_game
+let play_game game =
+  turn game (get_players game)
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
