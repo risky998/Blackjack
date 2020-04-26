@@ -4,7 +4,8 @@ open Yojson.Basic.Util
 
 type t = {
   players: Player.t list;
-  deck: Deck.t
+  deck: Deck.t;
+  stayed: Player.t list;
 }
 
 type result = Legal of t | Illegal
@@ -24,7 +25,8 @@ let print_cards = function
 
 let init_state json = 
   { players = json |> member "players" |> to_list |> List.map init_player;
-    deck = Deck.(full_deck () |> shuffle) } 
+    deck = Deck.(full_deck () |> shuffle);
+    stayed = [] } 
 
 (** [update_player card p players] is a new list of players after a player [p]
     has drawn a card [card] and his corresponding hand and hand value are 
@@ -35,14 +37,33 @@ let rec update_player card p players =
   | h::t -> if p = h then (Player.draw_card card p)::t
     else h::(update_player card p t) 
 
+let rec stay player g =
+  {
+    players = g.players;
+    deck = g.deck;
+    stayed = player::g.stayed;
+  }
+
+let in_stayed player game = 
+  let rec in_stayed_helper player lst = 
+    match lst with 
+    | [] -> false
+    | h::t -> if (player = h) then true else in_stayed_helper player t
+  in in_stayed_helper player (game.stayed) 
+
+let stayed_length game = 
+  List.length (game.stayed)
+
 let rec hit player g =
-  match Deck.draw g.deck with
-  | None -> Illegal
-  | Some (card, remaining) -> 
-    Legal {
-      players = update_player card player g.players;
-      deck = remaining
-    }
+  if (in_stayed player g) then Illegal else
+    match Deck.draw g.deck with
+    | None -> Illegal
+    | Some (card, remaining) -> 
+      Legal {
+        players = update_player card player g.players;
+        deck = remaining;
+        stayed = g.stayed;
+      }
 
 (** [replace_player p players] is a new list of players with the new state of
     player p replaced in players.  *)
@@ -72,12 +93,12 @@ let bet money player g =
     let new_players = replace_player new_player_draw g.players in
     Legal {
       players = new_players;
-      deck = remaining_deck
+      deck = remaining_deck;
+      stayed = g.stayed
     }
   else Illegal
 
 (* let next_turn players g =  *)
-
 
 let rec player_won p players = 
   let dealer_value = get_dealer_hand_value players in 
@@ -130,3 +151,10 @@ let top_card_value g =
   let dealer_hand = player_hand dealer in
   let dealer_len = List.length dealer_hand in
   if dealer_len = 0 then 0 else Deck.points (List.nth dealer_hand (dealer_len-1)) 
+
+let reset game = 
+  let rec reward_reset_state players= 
+    match players with 
+    |[] -> players 
+    | h::t -> if (player_won h players) then player_win h :: (reward_reset_state t) else player_lose h :: (reward_reset_state t)
+  in {players = reward_reset_state game.players; deck = Deck.(full_deck () |> shuffle); stayed = []}

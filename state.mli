@@ -27,6 +27,15 @@ val init_state : Yojson.Basic.t -> t
     Otherwise, the result is [Illegal]. *)
 val hit : Player.t -> t -> result
 
+(** [stay player g] is [g] after a  player [player] chooses to stay. *)
+val stay : Player.t -> t -> t
+
+(** [in_stayed player g] returns whether a player [player] is in ths stayed list of the game *)
+val in_stayed : Player.t -> t -> bool
+
+(** [stayed_length g] is the number of players who have already stayed.  *)
+val stayed_length : t -> int
+
 val bet : int -> Player.t -> t -> result
 
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is higher than the dealer's hand value  *)
@@ -48,3 +57,5 @@ val get_other_players: t -> Player.t list
 val dealer_info : t -> string * int
 
 val top_card_value : t -> int
+
+val reset: t->t

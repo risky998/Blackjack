@@ -46,6 +46,9 @@ val player_bet : int -> t -> t
 (** [player_win st] is the new state if the player wins a hand *)
 val player_win: t -> t
 
+(** [player_lose st] is the new state if the player loses a hand *)
+val player_lose: t -> t
+
 (** [draw_card card st] is the new state of the player after drawing a 
     card, with the value of Aces reduced from 11 to 1 to ensure the player's
     hand value is below 21 if possible. *)

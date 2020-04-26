@@ -65,6 +65,9 @@ module type StateSig = sig
   val init_state : Yojson.Basic.t -> t
   val hit : Player.t -> t -> result
   val bet : int -> Player.t -> t -> result
+  val stay: Player.t -> t -> t
+  val in_stayed: Player.t -> t -> bool
+  val stayed_length: t -> int 
   val player_won: Player.t -> Player.t list -> bool 
   val player_bust: Player.t -> Player.t list -> bool 
   val player_blackjack: Player.t -> Player.t list -> bool 
