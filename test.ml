@@ -1,6 +1,7 @@
 open OUnit2
 open Deck
 open Player
+open Command
 open State
 
 (********************************************************************
@@ -88,39 +89,60 @@ let deck_tests =
     "testing string_of_card" >:: (fun _ -> assert_equal "A♣" (string_of_card (Ace 11, Clubs)));
   ]
 
-let st = {
-  id = "Kazuya";
-  player_hand = [(Ace 11, Spades); (Two, Clubs); (Three, Diamonds)];
-}
+let j = Yojson.Basic.from_file "test.json"
+let st = init_player j
 
 let player_tests =
   [
-    "testing get_value_hand" >:: (fun _ -> assert_equal 11 (get_value_hand [(Ace 11, Clubs)] 0));
+    (* "testing get_value_hand" >:: (fun _ -> assert_equal 11 (get_value_hand [(Ace 11, Spades); (Two, Clubs); (Three, Diamonds)] 0)); *)
 
-    "testing player_hand" >:: (fun _ -> assert_equal 11 (player_hand st));
+    "testing player_hand" >:: (fun _ -> assert_equal [] (player_hand st));
 
-    "testing total_money" >:: (fun _ -> assert_equal 11 (total_money st));
+    "testing total_money" >:: (fun _ -> assert_equal 10 (total_money st));
 
-    "testing value_hand" >:: (fun _ -> assert_equal 11 (value_hand st));
+    "testing value_hand" >:: (fun _ -> assert_equal 0 (value_hand st));
 
-    "testing get_id" >:: (fun _ -> assert_equal 11 (get_id st));
+    "testing get_id" >:: (fun _ -> assert_equal "Player1" (get_id st));
 
-    "testing is_ai" >:: (fun _ -> assert_equal 11 (is_ai st));
+    "testing is_ai" >:: (fun _ -> assert_equal false (is_ai st));
 
-    "testing is_dealer" >:: (fun _ -> assert_equal 11 (is_dealer st));
+    "testing is_dealer" >:: (fun _ -> assert_equal false (is_dealer st));
 
+    "testing player_bet" >:: (fun _ -> assert_equal 3 (st |> player_bet 7|> total_money));
+
+    "testing player_win" >:: (fun _ -> assert_equal 17 (st |> player_bet 7 |> player_win|> total_money));
+
+    "testing player_lose" >:: (fun _ -> assert_equal 3 (st |> player_bet 7 |> player_lose|> total_money));
+
+    "testing draw_card" >:: (fun _ -> assert_equal 2 (st |> draw_card (Two, Clubs) |> value_hand));
   ]
 
-let state_tests =
+let command_tests =
   [
-    (* TODO: add tests for the State module here *)
+    "testing Quit" >:: (fun _ -> 
+        assert_equal Quit (parse "quit"));
+
+    "testing Hit" >:: (fun _ -> assert_equal Hit (parse "hit"));
+
+    "testing Stay" >:: (fun _ -> assert_equal Stay (parse "stay"));
+
+    "testing Money" >:: (fun _ -> assert_equal Money (parse "money"));
+
+    "testing Help" >:: (fun _ -> assert_equal Help (parse "help"));
+
+    "testing Bet" >:: (fun _ -> assert_equal (Bet 10) (parse "bet 10"));
+
+    "testing Empty" >:: (fun _ -> assert_raises Empty (fun () -> parse ""));
+
+    "testing Malformed" >:: (fun _ -> 
+        assert_raises Malformed (fun () -> parse "betting 10"));
   ]
 
 let suite =
   "test suite for Blacjack"  >::: List.flatten [
     deck_tests;
     player_tests;
-    state_tests;
+    command_tests;
   ]
 
 let _ = run_test_tt_main suite
