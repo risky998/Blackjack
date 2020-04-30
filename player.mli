@@ -40,11 +40,17 @@ val set_dealer : t -> t
 (**  [player_bet money st] is the new state after a player bets [money] on a play. *)
 val player_bet : int -> t -> t
 
-(** [player_win st] is the new state if the player wins a hand *)
+(** [player_win st] is the new state if the player wins a hand. *)
 val player_win: t -> t
 
-(** [player_lose st] is the new state if the player loses a hand *)
+(** [player_lose st] is the new state if the player loses a hand. *)
 val player_lose: t -> t
+
+(** [player_tie st] is the new state if the player is tied with the dealer's hand. *)
+val player_tie: t -> t
+
+(** [player_blackjack st] is the new state if the player has a blackjack hand. *)
+val player_blackjack: t -> t
 
 (** [draw_card card st] is the new state of the player after drawing a 
     card, with the value of Aces reduced from 11 to 1 to ensure the player's

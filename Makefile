@@ -39,4 +39,4 @@ docs-private: build
 		-inv-merge-ml-mli -m A $(MLIS) $(MLS)
 
 zip:
-	zip blackjack.zip *.ml* *.json _tags Makefile
+	zip blackjack.zip *.ml* *.json _tags Makefile .merlin INSTALL.txt
