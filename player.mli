@@ -40,6 +40,9 @@ val set_dealer : t -> t
 (**  [player_bet money st] is the new state after a player bets [money] on a play. *)
 val player_bet : int -> t -> t
 
+(**  [player_double money st] is the new state after a player doubles on a play. *)
+val player_double: t -> t 
+
 (** [player_win st] is the new state if the player wins a hand *)
 val player_win: t -> t
 

@@ -37,6 +37,14 @@ let rec update_player card p players =
   | h::t -> if p = h then (Player.draw_card card p)::t
     else h::(update_player card p t) 
 
+(** [double_player p players] is a new list of players after a player [p]
+    has doubled on a play *)
+let rec double_player p players = 
+  match players with 
+  | [] -> []
+  | h::t -> if p = h then (Player.player_double p)::t
+    else h::(double_player p t) 
+
 let stay player g =
   { g with stayed = (get_id player)::g.stayed;}
 
