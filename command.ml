@@ -22,6 +22,13 @@ let rec remove_spaces = function
     if h = "" then remove_spaces t
     else String.lowercase_ascii h::remove_spaces t
 
+(* [assert_int_of_string str] is true if int_on_string can be 
+   called on x, false otherwise.  *)
+let assert_int_of_string str = 
+  try
+    Some (int_of_string str) 
+  with Failure _ -> None
+
 let parse str =
   let str_list = String.split_on_char ' ' str |> remove_spaces in 
   match str_list with
@@ -32,6 +39,11 @@ let parse str =
     else if s = "money" then Money 
     else if s = "help" then Help 
     else raise Malformed
-  | s::m::[] -> if s = "bet" then (Bet (int_of_string m)) 
+  | s::m::[] -> if s = "bet" then 
+      begin
+        match assert_int_of_string m with
+        | Some money -> Bet money
+        | None -> raise Malformed
+      end
     else (raise Malformed)
   | _ -> (raise Malformed)

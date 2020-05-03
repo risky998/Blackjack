@@ -12,7 +12,6 @@ type result = Legal of t | Illegal
 
 let get_players g = g.players
 
-(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
 let rec get_dealer_hand_value players = 
   match players with 
   | [] -> failwith "Dealer was not found"
@@ -84,17 +83,9 @@ let rec replace_player p players =
   | h::t -> if Player.get_id p = Player.get_id h then p::t
     else h::replace_player p t
 
-(* let turn st stays= 
-   if stays is 4 then return st
-   otherwise -> call dealer function 
-   call ai function 
-   prompt player for action + match player action
-*)
-
-
 let bet money player g = 
   let player_money = total_money player in
-  if (money <= player_money) then 
+  if (money <= player_money && money > 0) then 
     let new_player_bet = player_bet money player in
     let draw_2 = Deck.draw_start g.deck in
     let cards_2 = fst draw_2 in
@@ -102,24 +93,15 @@ let bet money player g =
     let new_player_draw = Player.draw_card (List.nth cards_2 0) new_player_bet |> 
                           Player.draw_card (List.nth cards_2 1) in
     let new_players = replace_player new_player_draw g.players in
-    Legal {g with
-           players = new_players;
-           deck = remaining_deck;
+    Legal { g with
+            players = new_players;
+            deck = remaining_deck;
           }
   else Illegal
 
-(* let next_turn players g =  *)
-
-let rec player_won dealer_value p players = 
-  (* let dealer_value = get_dealer_hand_value players in  *)
-  match players with 
-  | [] -> false
-  | h::t -> if (Player.get_id p = Player.get_id h) && (dealer_value < value_hand h) then true else player_won dealer_value p t
-
-(* let rec player_bust p players =  
-   match players with 
-   | [] -> false
-   | h::t -> if (Player.get_id p = Player.get_id h) && (21 < value_hand h) then true else false *)
+let all_have_bet g = List.fold_left (fun acc p -> 
+    if (not (is_dealer p)) 
+    then acc && get_bet p <> 0 else acc) true g.players
 
 let player_bust player = 
   if value_hand player > 21 then true else false
@@ -149,21 +131,40 @@ let get_dealer g =
   let rec get_dealer_helper players = 
     match players with
     | [] -> raise (Failure "no dealer initiated")
-    | h::t -> if not (is_dealer h) then h
+    | h::t -> if is_dealer h then h
       else get_dealer_helper t
   in get_dealer_helper g.players
 
-let dealer_info g = 
-  let dealer = get_dealer g in
-  let dealer_hand = player_hand dealer in
-  let dealer_len = List.length dealer_hand in
-  if dealer_len = 0 then ("", 0) else (string_of_card (List.nth dealer_hand (dealer_len-1)), dealer_len)
+let get_non_dealers g = 
+  let rec get_non_dealer_helper players =
+    match players with
+    | [] -> []
+    | h::t -> if (is_dealer h) then get_non_dealer_helper t
+      else h::get_non_dealer_helper t
+  in get_non_dealer_helper g.players
 
-let top_card_value g =
+let dealer_top_card g = 
   let dealer = get_dealer g in
   let dealer_hand = player_hand dealer in
   let dealer_len = List.length dealer_hand in
-  if dealer_len = 0 then 0 else Deck.points (List.nth dealer_hand (dealer_len-1)) 
+  if dealer_len = 0 then None else Some (List.nth dealer_hand (dealer_len-1))
+
+type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
+
+let game_end_status dealer_value p = 
+  let p_val = value_hand p in
+  let p_hand = List.length (player_hand p) in 
+  if p_hand = 2 && p_val = 21 then PlayerBlackJack
+  else 
+    match (dealer_value, p_val) with
+    | (d,v) when v > 21 -> PlayerLose
+    | (d,v) when d > 21 && v < 21 -> PlayerWin
+    | (d,v) when d > 21 && v = 21 -> PlayerWin
+    | (d,v) when d < v && v = 21 -> PlayerWin
+    | (d,v) when v > d -> PlayerWin
+    | (d,v) when d = v -> PlayerTie
+    | (d,v) when v < d -> PlayerLose
+    | _ -> raise (Failure "Game Error")
 
 let reset game = 
   let dealer_value = get_dealer_hand_value game.players in 
@@ -171,6 +172,11 @@ let reset game =
     match players with 
     |[] -> players 
     | h::t -> if not (is_dealer h) then 
-        if (player_won dealer_value h players) then player_win h :: (reward_reset_state t) else player_lose h :: (reward_reset_state t)
+        begin match game_end_status dealer_value h with
+          | PlayerBlackJack -> Player.player_blackjack h::(reward_reset_state t) 
+          | PlayerTie -> Player.player_tie h::(reward_reset_state t) 
+          | PlayerWin -> Player.player_win h::(reward_reset_state t) 
+          | PlayerLose -> Player.player_lose h::(reward_reset_state t) 
+        end
       else h::reward_reset_state t
   in {players = reward_reset_state game.players; deck = Deck.(full_deck () |> shuffle); stayed = []}

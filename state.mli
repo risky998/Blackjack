@@ -13,6 +13,9 @@ type t
 (* The type representing the result of an attempted move. *)
 type result = Legal of t | Illegal
 
+(* The type representing the player's result at the end of the game. *)
+type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
+
 val get_players : t -> Player.t list
 
 (** [init_state] is the initial state of the game after each player
@@ -38,8 +41,14 @@ val stayed_length : t -> int
 
 val bet : int -> Player.t -> t -> result
 
-(** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is higher than the dealer's hand value  *)
-val player_won: int -> Player.t -> Player.t list -> bool 
+(** [all_have_bet g] is true if all non-dealer players have bet, false otherwise. *)
+val all_have_bet : t -> bool
+
+(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
+val get_dealer_hand_value : Player.t list -> int
+
+(** [game_end_status d p] returns whether the player won, lost, tied, or got a blackjack at the end of the game. *)
+val game_end_status: int -> Player.t -> status 
 
 (** [player_won p players] returns whether the player [p] busted, i.e their hand value is higher than 21  *)
 val player_bust: Player.t -> bool 
@@ -47,15 +56,14 @@ val player_bust: Player.t -> bool
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is 21 *)
 val player_blackjack: Player.t -> Player.t list -> bool 
 
-
 val get_player: t -> Player.t
 
 val get_dealer: t -> Player.t
 
+val get_non_dealers: t -> Player.t list
+
 val get_other_players: t -> Player.t list
 
-val dealer_info : t -> string * int
-
-val top_card_value : t -> int
+val dealer_top_card : t -> Deck.card option
 
 val reset: t->t
