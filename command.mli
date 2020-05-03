@@ -23,6 +23,7 @@ type command =
   | Quit 
   | Bet of money
   | Stay
+  |Double
   | Hit
   | Money
   | Help

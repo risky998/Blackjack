@@ -30,6 +30,9 @@ val init_state : Yojson.Basic.t -> t
     Otherwise, the result is [Illegal]. *)
 val hit : Player.t -> t -> result
 
+(** [double player g] is the updated game after [player] chooses to double. *)
+val double: Player.t -> t -> result
+
 (** [stay player g] is [g] after a  player [player] chooses to stay. *)
 val stay : Player.t -> t -> t
 

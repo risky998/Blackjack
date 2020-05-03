@@ -75,6 +75,10 @@ let rec hit player g =
       stayed = if (hand > 21) then (get_id player)::g.stayed else g.stayed
     }
 
+let rec double player g =
+  let new_players = double_player player g.players in 
+  Legal  {players = new_players; deck = g.deck; stayed = g.stayed}
+
 (** [replace_player p players] is a new list of players with the new state of
     player p replaced in players.  *)
 let rec replace_player p players = 

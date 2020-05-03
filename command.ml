@@ -6,6 +6,7 @@ type command =
   | Quit 
   | Bet of money
   | Stay
+  | Double
   | Hit
   | Money
   | Help
@@ -38,6 +39,7 @@ let parse str =
     else if s = "stay" then Stay
     else if s = "money" then Money 
     else if s = "help" then Help 
+    else if s = "double" then Double
     else raise Malformed
   | s::m::[] -> if s = "bet" then 
       begin

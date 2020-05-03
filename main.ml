@@ -151,6 +151,15 @@ let rec game_interface player game : State.t=
                                          "\nError: No cards available!\n");
               game_interface player game                        
           end
+        | Double -> 
+          begin 
+            match  double player game with
+            | Legal new_game -> 
+              new_game
+            | Illegal -> ANSITerminal.(print_string [yellow] 
+                                         "\nError: Double Failed!\n");
+              game_interface player game                        
+          end
         | _ -> 
           ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
           game_interface player game
