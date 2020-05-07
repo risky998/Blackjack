@@ -8,11 +8,7 @@
     phrase, where a {i word} is defined as a consecutive sequence of non-space 
     characters.  Thus, no element of the list should contain any leading,
     internal, or trailing spaces.  The list is in the same order as the words 
-    in the original player command.  For example:
-    - If the player command is ["go clock tower"], then the object phrase is 
-      [["clock"; "tower"]].
-    - If the player command is ["go clock     tower"], then the object phrase is
-      again [["clock"; "tower"]]. 
+    in the original player command.
 
     [money] is the amount of money the player wants to bet *)
 type money = int
