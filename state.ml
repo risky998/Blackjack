@@ -28,7 +28,7 @@ let init_state json =
 let rec update_player card p players = 
   match players with 
   | [] -> []
-  | h::t -> if get_id p = get_id h then (Player.draw_card card p)::t
+  | h::t -> if get_id p = get_id h then (Player.draw_card card h)::t
     else h::(update_player card p t) 
 
 let stay player g =
@@ -96,7 +96,8 @@ let all_have_bet g = List.fold_left (fun acc p ->
 let rec double_helper p players = 
   match players with 
   | [] -> []
-  | h::t -> if get_id p = get_id h then (Player.player_double p)::t
+  | h::t -> if get_id p = get_id h then 
+      (Player.player_double p)::t
     else h::(double_helper p t) 
 
 let double player g =
@@ -212,4 +213,3 @@ let reset game =
   let reset_players = reward_reset_state game.players in
   let reset_dealer = reset_dealer reset_players in
   {players = reset_dealer; deck = Deck.(full_deck () |> shuffle); stayed = []}
-
