@@ -196,8 +196,8 @@ let rec player_interface player game =
               player_interface player game                        
           end
         | Help -> 
-          ANSITerminal.(print_string [white] player_interface_help)
-            player_interface player game
+          ANSITerminal.(print_string [white] player_interface_help);
+          player_interface player game
         | _ -> 
           ANSITerminal.(print_string [red] "\nError: Invalid command!\n");
           player_interface player game
