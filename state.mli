@@ -69,4 +69,6 @@ val get_other_players: t -> Player.t list
 
 val dealer_top_card : t -> Deck.card option
 
+(** [reset players] is a new game with each player's money updated based on
+    their bets. Every player's hand is also reset to an empty hand. *)
 val reset: t->t

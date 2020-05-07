@@ -23,9 +23,8 @@ type command =
   | Quit 
   | Bet of money
   | Stay
-  |Double
+  | Double
   | Hit
-  | Money
   | Help
 
 (** Raised when an empty command is parsed. *)

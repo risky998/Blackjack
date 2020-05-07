@@ -55,6 +55,9 @@ val player_tie: t -> t
 (** [player_blackjack st] is the new state if the player has a blackjack hand. *)
 val player_blackjack: t -> t
 
+(** [dealer_reset_hand st] is the dealer's hand reset to having no cards. *)
+val dealer_reset_hand: t -> t
+
 (** [draw_card card st] is the new state of the player after drawing a 
     card, with the value of Aces reduced from 11 to 1 to ensure the player's
     hand value is below 21 if possible. *)

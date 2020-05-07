@@ -8,7 +8,6 @@ type command =
   | Stay
   | Double
   | Hit
-  | Money
   | Help
 
 exception Empty
@@ -37,7 +36,6 @@ let parse str =
   | [s] -> if s = "quit" then Quit
     else if s = "hit" then Hit 
     else if s = "stay" then Stay
-    else if s = "money" then Money 
     else if s = "help" then Help 
     else if s = "double" then Double
     else raise Malformed

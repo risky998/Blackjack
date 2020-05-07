@@ -38,6 +38,7 @@ module type PlayerSig = sig
   val player_lose: t -> t
   val player_tie: t -> t
   val player_blackjack: t -> t
+  val dealer_reset_hand: t -> t
   val draw_card : Deck.card -> t -> t
   val draw_card_dealer : Deck.card -> t -> t
 end
@@ -50,8 +51,8 @@ module type CommandSig = sig
     | Quit 
     | Bet of money
     | Stay
+    | Double
     | Hit
-    | Money
     | Help
   exception Empty
   exception Malformed

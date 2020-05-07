@@ -170,6 +170,13 @@ let game_end_status dealer_value p =
     | (d,v) when v < d -> PlayerLose
     | _ -> raise (Failure "Game Error")
 
+(** [reset_dealer players] is a new Player list with an empty dealer hand. *)
+let rec reset_dealer players =
+  match players with
+  | [] -> raise (Failure "no dealer initiated")
+  | h::t -> if is_dealer h then dealer_reset_hand h::t
+    else h::reset_dealer t
+
 let reset game = 
   let dealer_value = get_dealer_hand_value game.players in 
   let rec reward_reset_state players= 
@@ -183,4 +190,7 @@ let reset game =
           | PlayerLose -> Player.player_lose h::(reward_reset_state t) 
         end
       else h::reward_reset_state t
-  in {players = reward_reset_state game.players; deck = Deck.(full_deck () |> shuffle); stayed = []}
+  in 
+  let reset_players = reward_reset_state game.players in
+  let reset_dealer = reset_dealer reset_players in
+  {players = reset_dealer; deck = Deck.(full_deck () |> shuffle); stayed = []}

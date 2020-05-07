@@ -60,8 +60,6 @@ let player_double st =
   let bet = st.player_bet in 
   {st with total_money = st.total_money - bet; player_bet = 2 * bet}
 
-(* If they player wins, they win twice what they bet *)
-
 let player_win st =  
   {st with total_money = st.total_money + 2*st.player_bet; player_bet = 0; player_hand = []; value_hand = 0}
 
@@ -73,6 +71,9 @@ let player_tie st =
 
 let player_blackjack st =  
   {st with total_money = st.total_money + 2*st.player_bet; player_bet = 0; player_hand = []; value_hand = 0}
+
+let dealer_reset_hand st =  
+  {st with player_hand = []; value_hand = 0}
 
 (** [reduce_ace_below_21 hand] is the new hand of the player after changing 
     the values of as few Aces as possible so that the value of the new hand is 

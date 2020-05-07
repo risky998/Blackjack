@@ -64,9 +64,7 @@ let rec dealer_interface game =
     end
   | _ -> game
 
-(** [game_interface st] is the game interface that prompts the user
-    to enter a command and updates the state [st] accordingly. *)
-let rec game_interface player game : State.t= 
+let player_interface_info player game = 
   let hand = List.map(fun card -> string_of_card card) (player_hand player) in
   ANSITerminal.
     (print_string [blue] ("Cards: ["^
@@ -93,39 +91,47 @@ let rec game_interface player game : State.t=
       let other_player_hand = List.map(fun card -> string_of_card card) (player_hand p) in
       ANSITerminal.
         (print_string [blue] ("Player "^(get_id p)^"'s hand: "^
-                              (print_cards other_player_hand)^"\n"));) other_players;
+                              (print_cards other_player_hand)^"\n"));) other_players
+
+let rec player_bet_interface player game = 
+  match read_line () with
+  | command -> 
+    begin 
+      match (parse command) with
+      | exception Empty -> 
+        ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
+        player_bet_interface player game
+      | exception Malformed -> 
+        ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
+        player_bet_interface player game
+      | Quit -> 
+        ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
+        exit 0
+      | Bet money -> 
+        begin 
+          match bet money player game with
+          | Legal new_game -> 
+            new_game
+          | Illegal -> if money = 0 then 
+              ANSITerminal.(print_string [yellow] 
+                              "\nError: You need to bet something!\n")
+            else 
+              ANSITerminal.(print_string [yellow] 
+                              "\nError: Not enough money!\n");
+            player_bet_interface player game
+        end
+      | _ -> 
+        ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
+        player_bet_interface player game
+    end
+
+(** [player_interface st] is the game interface that prompts the user
+    to enter a command and updates the state [st] accordingly. *)
+let rec player_interface player game = 
+  player_interface_info player game;
   let player_bet = get_bet player in
   if player_bet = 0 then
-    match read_line () with
-    | command -> 
-      begin 
-        match (parse command) with
-        | exception Empty -> 
-          ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
-          game_interface player game
-        | exception Malformed -> 
-          ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
-          game_interface player game
-        | Quit -> 
-          ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
-          exit 0
-        | Bet money -> 
-          begin 
-            match bet money player game with
-            | Legal new_game -> 
-              new_game
-            | Illegal -> if money = 0 then 
-                ANSITerminal.(print_string [yellow] 
-                                "\nError: You need to bet something!\n")
-              else 
-                ANSITerminal.(print_string [yellow] 
-                                "\nError: Not enough money!\n");
-              game_interface player game
-          end
-        | _ -> 
-          ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
-          game_interface player game
-      end
+    player_bet_interface player game
   else 
     match read_line () with
     | command -> 
@@ -134,10 +140,10 @@ let rec game_interface player game : State.t=
         | exception Empty -> 
           ANSITerminal.(print_string [yellow] 
                           "\nError: Please enter a command!\n");
-          game_interface player game
+          player_interface player game
         | exception Malformed -> 
           ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
-          game_interface player game
+          player_interface player game
         | Quit -> 
           ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
           exit 0
@@ -149,7 +155,7 @@ let rec game_interface player game : State.t=
               new_game
             | Illegal -> ANSITerminal.(print_string [yellow] 
                                          "\nError: No cards available!\n");
-              game_interface player game                        
+              player_interface player game                        
           end
         | Double -> 
           begin 
@@ -158,15 +164,15 @@ let rec game_interface player game : State.t=
               new_game
             | Illegal -> ANSITerminal.(print_string [yellow] 
                                          "\nError: Double Failed!\n");
-              game_interface player game                        
+              player_interface player game                        
           end
         | _ -> 
           ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
-          game_interface player game
+          player_interface player game
       end
 
 let rec turn game players =
-  if stayed_length game < 3 then
+  if stayed_length game < List.length (get_non_dealers game) then
     match players with
     | [] -> 
       turn game (get_non_dealers game)
@@ -183,12 +189,11 @@ let rec turn game players =
         ANSITerminal.(print_string [blue]   
                         ("___________________________________________________" ^
                          "\n\nIt is your turn now.\n"));
-      turn (game_interface h game) t
+      turn (player_interface h game) t
   else 
     ANSITerminal.(print_string [blue]   
                     ("___________________________________________________" ^
                      "\n\nIt is dealer's turn now.\n"));
-  (* ANSITerminal.(print_string [yellow] (string_of_int (value_hand dealer))); *)
   let end_game = dealer_interface game in
   let end_players = get_non_dealers end_game in
   let dealer_value = Player.value_hand (State.get_dealer end_game) in
