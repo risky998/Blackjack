@@ -15,7 +15,7 @@ let print_cards = function
 let ai_interface ai game = 
   let ai_bet = get_bet ai in
   if ai_bet = 0 then 
-    match bet 20 ai game with
+    match bet 300 ai game with
     | Legal new_game -> 
       ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
                                            " bets "^(string_of_int 20)^"\n"));
@@ -114,10 +114,10 @@ let rec player_bet_interface player game =
     begin 
       match (parse command) with
       | exception Empty -> 
-        ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
+        ANSITerminal.(print_string [red] "\nYou need to bet first!\n");
         player_bet_interface player game
       | exception Malformed -> 
-        ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
+        ANSITerminal.(print_string [red] "\nYou need to bet first!\n");
         player_bet_interface player game
       | Quit -> 
         ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
@@ -128,15 +128,15 @@ let rec player_bet_interface player game =
           | Legal new_game -> 
             new_game
           | Illegal -> if money = 0 then 
-              ANSITerminal.(print_string [yellow] 
+              ANSITerminal.(print_string [red] 
                               "\nError: You need to bet something!\n")
             else 
-              ANSITerminal.(print_string [yellow] 
+              ANSITerminal.(print_string [red] 
                               "\nError: Not enough money!\n");
             player_bet_interface player game
         end
       | _ -> 
-        ANSITerminal.(print_string [yellow] "\nYou need to bet first!\n");
+        ANSITerminal.(print_string [red] "\nYou need to bet first!\n");
         player_bet_interface player game
     end
 
@@ -153,11 +153,11 @@ let rec player_interface player game =
       begin 
         match (parse command) with
         | exception Empty -> 
-          ANSITerminal.(print_string [yellow] 
+          ANSITerminal.(print_string [red] 
                           "\nError: Please enter a command!\n");
           player_interface player game
         | exception Malformed -> 
-          ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
+          ANSITerminal.(print_string [red] "\nError: Invalid command!\n");
           player_interface player game
         | Quit -> 
           ANSITerminal.(print_string [blue] "\nThanks for playing!\n");
@@ -168,7 +168,7 @@ let rec player_interface player game =
             match hit player game with
             | Legal new_game -> 
               new_game
-            | Illegal -> ANSITerminal.(print_string [yellow] 
+            | Illegal -> ANSITerminal.(print_string [red] 
                                          "\nError: No cards available!\n");
               player_interface player game                        
           end
@@ -177,12 +177,12 @@ let rec player_interface player game =
             match  double player game with
             | Legal new_game -> 
               new_game
-            | Illegal -> ANSITerminal.(print_string [yellow] 
+            | Illegal -> ANSITerminal.(print_string [red] 
                                          "\nError: Double Failed!\n");
               player_interface player game                        
           end
         | _ -> 
-          ANSITerminal.(print_string [yellow] "\nError: Invalid command!\n");
+          ANSITerminal.(print_string [red] "\nError: Invalid command!\n");
           player_interface player game
       end
 
@@ -266,32 +266,39 @@ let rec turn game players =
   let end_game = dealer_interface game in
   let end_players = get_non_dealers end_game in
   let dealer_value = Player.value_hand (State.get_dealer end_game) in
-  ANSITerminal.(print_string [red] ("\nDealer's hand: "^
-                                    string_of_int dealer_value));
+  ANSITerminal.(print_string [blue] ("\nDealer's hand: "^
+                                     string_of_int dealer_value));
   List.iter (fun p -> match game_end_status dealer_value p with
-      | PlayerLose -> ANSITerminal.(print_string [red] 
+      | PlayerLose -> ANSITerminal.(print_string [blue] 
                                       ("\nPlayer "^(get_id p)^" lost "^
                                        string_of_int (get_bet p)^
                                        "; Hand Value: "^
                                        string_of_int (value_hand p)))
-      | PlayerWin -> ANSITerminal.(print_string [red] 
+      | PlayerWin -> ANSITerminal.(print_string [blue] 
                                      ("\nPlayer "^(get_id p)^" won "^
                                       string_of_int ((get_bet p)*2)^
                                       "; Hand Value: "^
                                       string_of_int (value_hand p)))
-      | PlayerBlackJack -> ANSITerminal.(print_string [red] 
+      | PlayerBlackJack -> ANSITerminal.(print_string [blue] 
                                            ("\nPlayer "^(get_id p)^" won "^
                                             string_of_int ((get_bet p)*2)^
                                             "; Hand Value: "^
                                             string_of_int (value_hand p)))
-      | PlayerTie -> ANSITerminal.(print_string [red] 
+      | PlayerTie -> ANSITerminal.(print_string [blue] 
                                      ("\nPlayer "^(get_id p)^
                                       " tied"^
                                       "; Hand Value: "^
                                       string_of_int (value_hand p)))
     ) end_players;
   let new_game = reset end_game in
-  new_game_message new_game
+  if (total_money (get_player new_game)) <= 0 then 
+    begin
+      ANSITerminal.(print_string [blue] 
+                      ("\n\nYou have run out of money :("^
+                       "\nThanks for playing!\n"));
+      exit 0
+    end
+  else new_game_message new_game
 
 (** [new_game_message game] prompts the player to start a new game or 
     quit and/or save the game. *)
@@ -302,7 +309,7 @@ and new_game_message game =
   match read_line () with
   | "yes" | "y" -> ANSITerminal.(print_string [red]   
                                    "\n\nNEW GAME\n");
-    turn (game) (get_players (game))
+    turn (game) (get_non_dealers game)
   | "no" | "n" -> save_game_message game
   | _ -> print_endline "Enter a valid command!";
     new_game_message game
@@ -313,7 +320,7 @@ let play_game game =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  ANSITerminal.(print_string [red]
+  ANSITerminal.(print_string [blue]
                   "\n\nWelcome to the 3110 Blackjack Game engine.\n");
   print_endline ("Please enter the number of AI CPU's "^
                  "you wish to play against (0, 1 or).\n");

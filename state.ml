@@ -183,11 +183,22 @@ let reset game =
     match players with 
     |[] -> players 
     | h::t -> if not (is_dealer h) then 
-        begin match game_end_status dealer_value h with
+        begin 
+          match game_end_status dealer_value h with
           | PlayerBlackJack -> Player.player_blackjack h::(reward_reset_state t) 
           | PlayerTie -> Player.player_tie h::(reward_reset_state t) 
           | PlayerWin -> Player.player_win h::(reward_reset_state t) 
-          | PlayerLose -> Player.player_lose h::(reward_reset_state t) 
+          | PlayerLose -> 
+            let player_lose = Player.player_lose h in
+            if (total_money player_lose) <= 0 && (is_ai h) 
+            then 
+              begin
+                ANSITerminal.(print_string [blue] 
+                                ("\nPlayer "^(get_id player_lose)^
+                                 " ran out of money."));
+                reward_reset_state t 
+              end
+            else player_lose::reward_reset_state t
         end
       else h::reward_reset_state t
   in 
