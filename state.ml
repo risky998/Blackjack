@@ -161,6 +161,7 @@ let dealer_top_card g =
 
 type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
 
+(** [game_end_status dealer_value p] is the status [status] of player [p] in the game given the value [dealer_value] of the dealer's hand.*)
 let game_end_status dealer_value p = 
   let p_val = value_hand p in
   let p_hand = List.length (player_hand p) in 

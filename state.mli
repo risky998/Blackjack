@@ -63,14 +63,19 @@ val player_bust: Player.t -> bool
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is 21 *)
 val player_blackjack: Player.t -> Player.t list -> bool 
 
+(** [get_player g] is the real, non-AI, player in the game state [g] *)
 val get_player: t -> Player.t
 
+(** [get_player g] is the dealer in the game state [g] *)
 val get_dealer: t -> Player.t
 
+(** [get_player g] is all the non-dealer [players] in the game state g *)
 val get_non_dealers: t -> Player.t list
 
+(** [get_player g] is all the non-dealer, non main player [players] in the game state g. It is all the AI units. *)
 val get_other_players: t -> Player.t list
 
+(** [dealer_top_card g] is the top card [card] of the dealer in game state [g]. *)
 val dealer_top_card : t -> Deck.card option
 
 (** [reset players] is a new game with each player's money updated based on
