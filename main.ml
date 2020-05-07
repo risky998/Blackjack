@@ -29,7 +29,7 @@ let ai_interface ai game =
         | Some c -> points c
       end
     in
-    match hit_stay_strategy dealer_top_card ai with
+    match hit_double_stay_strategy dealer_top_card ai with
     | Stay -> 
       ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
                                            " stays\n"));
@@ -40,6 +40,15 @@ let ai_interface ai game =
         | Legal new_game -> 
           ANSITerminal.(print_string [yellow] ("\nPlayer "^
                                                (get_id ai)^" hits\n"));          
+          new_game
+        | Illegal -> game
+      end
+    | Double -> 
+      begin 
+        match double ai game with
+        | Legal new_game -> 
+          ANSITerminal.(print_string [yellow] ("\nPlayer "^
+                                               (get_id ai)^" doubles down.\n"));          
           new_game
         | Illegal -> game
       end
