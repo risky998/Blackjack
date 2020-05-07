@@ -174,7 +174,7 @@ let rec player_interface player game =
           end
         | Double -> 
           begin 
-            match  double player game with
+            match double player game with
             | Legal new_game -> 
               new_game
             | Illegal -> ANSITerminal.(print_string [red] 
@@ -322,8 +322,7 @@ let play_game game =
 let main () =
   ANSITerminal.(print_string [blue]
                   "\n\nWelcome to the 3110 Blackjack Game engine.\n");
-  print_endline ("Please enter the number of AI CPU's "^
-                 "you wish to play against (0, 1 or).\n");
+  print_endline ("Please enter the name of the game file you wish to load.\n");
   print_string  "> ";
   match read_line () with
   | exception End_of_file -> ()

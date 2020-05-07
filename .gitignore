@@ -3,5 +3,7 @@
 _build/
 *.DS_Store
 *.json
-!init.json
+!init1.json
+!init2.json
+!init3.json
 *.zip

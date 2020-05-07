@@ -30,10 +30,13 @@ val init_state : Yojson.Basic.t -> t
     Otherwise, the result is [Illegal]. *)
 val hit : Player.t -> t -> result
 
-(** [double player g] is the updated game after [player] chooses to double. *)
+(** [double player g] is the updated game after [player] chooses to double 
+    their bet. 
+    The player draws an extra card and is considered to have stayed 
+    thereafter. *)
 val double: Player.t -> t -> result
 
-(** [stay player g] is [g] after a  player [player] chooses to stay. *)
+(** [stay player g] is [g] after a player [player] chooses to stay. *)
 val stay : Player.t -> t -> t
 
 (** [in_stayed player g] returns whether a player [player] is in ths stayed list of the game *)
