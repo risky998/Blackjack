@@ -34,10 +34,13 @@ val init_state : Yojson.Basic.t -> t
     Otherwise, the result is [Illegal]. *)
 val hit : Player.t -> t -> result
 
-(** [double player g] is the result [r] of player [players] choosing to double in game state [g] *)
+(** [double player g] is the updated game after [player] chooses to double 
+    their bet. 
+    The player draws an extra card and is considered to have stayed 
+    thereafter. *)
 val double: Player.t -> t -> result
 
-(** [stay player g] is [g] after a  player [player] chooses to stay. *)
+(** [stay player g] is [g] after a player [player] chooses to stay. *)
 val stay : Player.t -> t -> t
 
 (** [in_stayed player g] returns whether a player [player] is in ths stayed list of the game *)
@@ -60,14 +63,19 @@ val player_bust: Player.t -> bool
 (** [player_won p players] returns whether the player [p] won a hand, i.e their hand value is 21 *)
 val player_blackjack: Player.t -> Player.t list -> bool 
 
+(** [get_player g] is the real, non-AI, player in the game state [g] *)
 val get_player: t -> Player.t
 
+(** [get_player g] is the dealer in the game state [g] *)
 val get_dealer: t -> Player.t
 
+(** [get_player g] is all the non-dealer [players] in the game state g *)
 val get_non_dealers: t -> Player.t list
 
+(** [get_player g] is all the non-dealer, non main player [players] in the game state g. It is all the AI units. *)
 val get_other_players: t -> Player.t list
 
+(** [dealer_top_card g] is the top card [card] of the dealer in game state [g]. *)
 val dealer_top_card : t -> Deck.card option
 
 (** [reset players] is a new game with each player's money updated based on

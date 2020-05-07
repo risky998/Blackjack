@@ -28,16 +28,8 @@ let init_state json =
 let rec update_player card p players = 
   match players with 
   | [] -> []
-  | h::t -> if p = h then (Player.draw_card card p)::t
+  | h::t -> if get_id p = get_id h then (Player.draw_card card p)::t
     else h::(update_player card p t) 
-
-(** [double_player p players] is a new list of players after a player [p]
-    has doubled on a play *)
-let rec double_player p players = 
-  match players with 
-  | [] -> []
-  | h::t -> if p = h then (Player.player_double p)::t
-    else h::(double_player p t) 
 
 let stay player g =
   { g with stayed = (get_id player)::g.stayed;}
@@ -71,10 +63,6 @@ let rec hit player g =
       stayed = if (hand > 21) then (get_id player)::g.stayed else g.stayed
     }
 
-let rec double player g =
-  let new_players = double_player player g.players in 
-  Legal  {players = new_players; deck = g.deck; stayed = g.stayed}
-
 (** [replace_player p players] is a new list of players with the new state of
     player p replaced in players.  *)
 let rec replace_player p players = 
@@ -102,6 +90,28 @@ let bet money player g =
 let all_have_bet g = List.fold_left (fun acc p -> 
     if (not (is_dealer p)) 
     then acc && get_bet p <> 0 else acc) true g.players
+
+(** [double_helper p players] is a new list of players after a player [p]
+    has doubled on a play *)
+let rec double_helper p players = 
+  match players with 
+  | [] -> []
+  | h::t -> if get_id p = get_id h then (Player.player_double p)::t
+    else h::(double_helper p t) 
+
+let double player g =
+  let double_player = double_helper player g.players in 
+  match Deck.draw g.deck with
+  | None -> Illegal
+  | Some (card, remaining) -> 
+    let new_players = update_player card player double_player in 
+    ANSITerminal.(print_string [blue] 
+                    ("\nYou drew "^string_of_card card^"\n"));
+    Legal { 
+      players = new_players; 
+      deck = remaining;
+      stayed = (get_id player)::g.stayed
+    }
 
 let player_bust player = 
   if value_hand player > 21 then true else false
@@ -151,6 +161,7 @@ let dealer_top_card g =
 
 type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
 
+(** [game_end_status dealer_value p] is the status [status] of player [p] in the game given the value [dealer_value] of the dealer's hand.*)
 let game_end_status dealer_value p = 
   let p_val = value_hand p in
   let p_hand = List.length (player_hand p) in 
@@ -201,3 +212,4 @@ let reset game =
   let reset_players = reward_reset_state game.players in
   let reset_dealer = reset_dealer reset_players in
   {players = reset_dealer; deck = Deck.(full_deck () |> shuffle); stayed = []}
+
