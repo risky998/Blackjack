@@ -10,6 +10,8 @@ let print_cards = function
   | [s] -> s
   | h::t -> List.fold_left (fun acc e -> acc^", "^e) h t
 
+(** [ai_interface ai game] updates the state [game] accordingly after 
+    the AI executes its commands. *)
 let ai_interface ai game = 
   let ai_bet = get_bet ai in
   if ai_bet = 0 then 
@@ -40,6 +42,8 @@ let ai_interface ai game =
       end
     | _ -> game
 
+(** [dealer_interface game] updates the state [game] accordingly after 
+    the dealer executes its commands. *)
 let rec dealer_interface game = 
   let dealer = get_dealer game in
   let dealer_hand = List.map(fun card -> string_of_card card) (player_hand dealer) in
@@ -64,6 +68,9 @@ let rec dealer_interface game =
     end
   | _ -> game
 
+(** [player_interface_info player game] displays information on the terminal
+    during the player's turn, such as the player's hand, money, hand value,
+    cards of other players, and the dealer's top card. *)
 let player_interface_info player game = 
   let hand = List.map(fun card -> string_of_card card) (player_hand player) in
   ANSITerminal.
@@ -93,6 +100,8 @@ let player_interface_info player game =
         (print_string [blue] ("Player "^(get_id p)^"'s hand: "^
                               (print_cards other_player_hand)^"\n"));) other_players
 
+(** [player_bet_interface player game] updates the state [game] accordingly 
+    after the player bets. *)
 let rec player_bet_interface player game = 
   match read_line () with
   | command -> 
@@ -125,8 +134,8 @@ let rec player_bet_interface player game =
         player_bet_interface player game
     end
 
-(** [player_interface st] is the game interface that prompts the user
-    to enter a command and updates the state [st] accordingly. *)
+(** [player_interface player game] is the game interface that prompts the user
+    to enter a command and updates the state [game] accordingly. *)
 let rec player_interface player game = 
   player_interface_info player game;
   let player_bet = get_bet player in
@@ -171,6 +180,11 @@ let rec player_interface player game =
           player_interface player game
       end
 
+(** [turn game players] runs the game by first allowing all the non-dealer
+    players to execute commands, then letting the dealer execute its command.
+    After all players have executed their commands, the state [game] is updated
+    accordingly with the money lost/won by each player and a new game is 
+    started with everyone's hands reset.  *)
 let rec turn game players =
   if stayed_length game < List.length (get_non_dealers game) then
     match players with
@@ -181,28 +195,45 @@ let rec turn game players =
       else 
         ANSITerminal.(print_string [blue]   
                         ("___________________________________________________"^
-                         "\n\nIt is Player " ^(Player.get_id h)^ "'s turn now.\n"));
+                         "\n\nIt is Player " ^(Player.get_id h)^
+                         "'s turn now.\n"));
       turn (ai_interface h game) t
     | h::t -> 
       if (in_stayed h game) then turn game t 
       else 
         ANSITerminal.(print_string [blue]   
-                        ("___________________________________________________" ^
+                        ("___________________________________________________"^
                          "\n\nIt is your turn now.\n"));
       turn (player_interface h game) t
   else 
     ANSITerminal.(print_string [blue]   
-                    ("___________________________________________________" ^
+                    ("___________________________________________________"^
                      "\n\nIt is dealer's turn now.\n"));
   let end_game = dealer_interface game in
   let end_players = get_non_dealers end_game in
   let dealer_value = Player.value_hand (State.get_dealer end_game) in
   ANSITerminal.(print_string [red] ("\nDealer's hand: "^string_of_int dealer_value));
   List.iter (fun p -> match game_end_status dealer_value p with
-      | PlayerLose ->  ANSITerminal.(print_string [red] ("\nPlayer "^(get_id p)^" lost "^string_of_int (get_bet p)^" tempVal: "^string_of_int (value_hand p)))
-      | PlayerWin ->   ANSITerminal.(print_string [red] ("\nPlayer "^(get_id p)^" won "^string_of_int ((get_bet p)*2)^" tempVal: "^string_of_int (value_hand p)))
-      | PlayerBlackJack -> ANSITerminal.(print_string [red] ("\nPlayer "^(get_id p)^" won "^string_of_int ((get_bet p)*2)^" tempVal: "^string_of_int (value_hand p)))
-      | PlayerTie -> ANSITerminal.(print_string [red] ("\nPlayer "^(get_id p)^" tied"^" tempVal: "^string_of_int (value_hand p)))
+      | PlayerLose -> ANSITerminal.(print_string [red] 
+                                      ("\nPlayer "^(get_id p)^" lost "^
+                                       string_of_int (get_bet p)^
+                                       "; Hand Value: "^
+                                       string_of_int (value_hand p)))
+      | PlayerWin -> ANSITerminal.(print_string [red] 
+                                     ("\nPlayer "^(get_id p)^" won "^
+                                      string_of_int ((get_bet p)*2)^
+                                      "; Hand Value: "^
+                                      string_of_int (value_hand p)))
+      | PlayerBlackJack -> ANSITerminal.(print_string [red] 
+                                           ("\nPlayer "^(get_id p)^" won "^
+                                            string_of_int ((get_bet p)*2)^
+                                            "; Hand Value: "^
+                                            string_of_int (value_hand p)))
+      | PlayerTie -> ANSITerminal.(print_string [red] 
+                                     ("\nPlayer "^(get_id p)^
+                                      " tied"^
+                                      "; Hand Value: "^
+                                      string_of_int (value_hand p)))
     ) end_players;
   let new_game = reset end_game in 
   ANSITerminal.(print_string [red]   
