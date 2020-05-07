@@ -52,7 +52,8 @@ let in_stayed player game =
 let stayed_length game = 
   List.length (game.stayed)
 
-(** DOCUMENTATION*)
+(** [find_player_hand_value] finds the player [p] in the list of [players]
+    and gets their hand value. *)
 let rec find_player_hand_value p players = 
   match players with
   | [] -> 0
