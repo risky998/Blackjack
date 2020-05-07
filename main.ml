@@ -186,71 +186,44 @@ let rec player_interface player game =
           player_interface player game
       end
 
-(** [get_json_list ()] is a list of all the json games. *)
-let get_json_list unit = 
-  let dir = Unix.opendir "." in
-
-  let contains_json file = 
-    try
-      let i = String.rindex file '.' in
-      String.sub file i (String.length file - i) = ".json"
-    with _ -> false in
-
-  let rec read_files dir acc =
-    match Unix.readdir dir with
-    |file when contains_json file -> 
-      (try
-         let game = String.sub file 0 (String.rindex file '.') in
-         read_files dir (game::acc)
-       with _ -> read_files dir acc )
-    |file -> read_files dir acc 
-    |exception End_of_file -> (Unix.closedir dir); acc in
-  read_files dir []
-
-let to_json players = 
+(** [make_json] players creates a valid JSON representation based on the
+    Player list [players]. *)
+let make_json players = 
   let p_ids = List.map Player.get_id players in 
   let p_money = List.map Player.total_money players in
   let p_dealer = List.map Player.is_dealer players in 
   let p_ai = List.map Player.is_ai players in
-
-  let rec make_player_json acc id total_money dealer ai = 
+  let rec json_helper id total_money dealer ai = 
     match id, total_money, dealer, ai with
-    | [], [], [], [] -> List.rev acc
-    | i::is, n::ns, d::ds, c::cs -> 
+    | [], [], [], [] -> []
+    | i::ri, m::rm, d::rd, a::ra ->
       let player = `Assoc [("id", `String i);
-                           ("total_money",`Int n);
+                           ("total_money",`Int m);
                            ("dealer", `Bool d);
-                           ("ai", `Bool c);] in 
-      make_player_json (player::acc) is ns ds cs
-    |_ -> 
-      failwith "Corrupted game" in
+                           ("ai", `Bool a);] in 
+      player::json_helper ri rm rd ra
+    |_ -> raise (Failure "Corrupted game") in
+  let players_json = json_helper p_ids p_money p_dealer p_ai in 
+  `Assoc [("players", `List players_json)]
 
-  let json_player_lst = make_player_json [] p_ids p_money p_dealer p_ai in 
-  `Assoc [("players", `List json_player_lst)]
-
+(** [save_game game] prompts the player to enter a file name and saves
+    the state [game] to that file with a json extension. *)
 let rec save_game game =
   print_string  ("\n\nEnter game name: "); 
-  match String.trim (read_line ()) |> 
-        String.map (fun s -> if s = ' ' then '_' else s) with
+  let format_file_name = String.trim (read_line ()) |> 
+                         String.map (fun c -> if c = ' ' then '_' else c) |> 
+                         String.lowercase_ascii in
+  match format_file_name with
   | "" -> print_endline "Enter a valid file name!";
     save_game game
-  | s ->  if List.mem (s^".json") (get_json_list ()) then
-      begin
-        ANSITerminal.(print_string [red] ("Game with name"^s^
-                                          "already exists. Overwrite? (y/n)"));
-        print_string "> ";
-        match read_line () with
-        | "y" | "yes" -> begin 
-            Yojson.to_file (s^".json") (to_json (get_players game));
-            exit 0 
-          end
-        | "no" | "n" -> save_game game
-        | _ -> print_endline "Enter a valid command!";
-      end
-    else Yojson.to_file (s^".json") (to_json (get_players game));
-    exit 0
+  | s -> 
+    print_endline ("Game saved as "^s^".json");
+    Yojson.to_file (s^".json") (make_json (get_players game));
+    exit 0 
 
-let rec save_game_prompt game = 
+(** [save_game_message game] prompts the player to save a game or
+    quit the game. *)
+let rec save_game_message game = 
   print_endline  ("\n\nWould you like to save this game? (y/n)"); 
   print_string  "> "; 
   begin 
@@ -259,7 +232,6 @@ let rec save_game_prompt game =
       save_game game
     | "no" | "n" -> exit 0
     | _ -> print_endline "Enter a valid command!";
-
   end
 
 (** [turn game players] runs the game by first allowing all the non-dealer
@@ -319,9 +291,11 @@ let rec turn game players =
                                       string_of_int (value_hand p)))
     ) end_players;
   let new_game = reset end_game in
-  new_game_prompt new_game
+  new_game_message new_game
 
-and new_game_prompt game = 
+(** [new_game_message game] prompts the player to start a new game or 
+    quit and/or save the game. *)
+and new_game_message game = 
   if List.length (get_non_dealers game) = 0 then () else
     print_endline  ("\n\nPlay again? (y/n)"); 
   print_string  "> "; 
@@ -329,9 +303,9 @@ and new_game_prompt game =
   | "yes" | "y" -> ANSITerminal.(print_string [red]   
                                    "\n\nNEW GAME\n");
     turn (game) (get_players (game))
-  | "no" | "n" -> save_game_prompt game
+  | "no" | "n" -> save_game_message game
   | _ -> print_endline "Enter a valid command!";
-    new_game_prompt game
+    new_game_message game
 
 (** [play_game f] starts the adventure in file [f]. *)
 let play_game game =
