@@ -17,7 +17,8 @@ let ai_interface ai game =
   if ai_bet = 0 then 
     match bet 20 ai game with
     | Legal new_game -> 
-      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" bets "^(string_of_int 20)^"\n"));
+      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
+                                           " bets "^(string_of_int 20)^"\n"));
       new_game
     | Illegal -> game
   else 
@@ -30,13 +31,15 @@ let ai_interface ai game =
     in
     match hit_stay_strategy dealer_top_card ai with
     | Stay -> 
-      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" stays\n"));
+      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
+                                           " stays\n"));
       stay ai game
     | Hit -> 
       begin 
         match hit ai game with
         | Legal new_game -> 
-          ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^" hits\n"));          
+          ANSITerminal.(print_string [yellow] ("\nPlayer "^
+                                               (get_id ai)^" hits\n"));          
           new_game
         | Illegal -> game
       end
@@ -46,7 +49,8 @@ let ai_interface ai game =
     the dealer executes its commands. *)
 let rec dealer_interface game = 
   let dealer = get_dealer game in
-  let dealer_hand = List.map(fun card -> string_of_card card) (player_hand dealer) in
+  let dealer_hand = List.map(fun card -> string_of_card card) 
+      (player_hand dealer) in
   ANSITerminal.
     (print_string [blue] ("Cards: ["^
                           print_cards (dealer_hand)^"]\n"));
@@ -95,10 +99,12 @@ let player_interface_info player game =
     (print_string [blue] ("Dealer's Top Card: "^dealer_top_card^"\n"));
   let other_players = get_other_players game in
   List.iter(fun p -> 
-      let other_player_hand = List.map(fun card -> string_of_card card) (player_hand p) in
+      let other_player_hand = List.map(fun card -> string_of_card card) 
+          (player_hand p) in
       ANSITerminal.
         (print_string [blue] ("Player "^(get_id p)^"'s hand: "^
-                              (print_cards other_player_hand)^"\n"));) other_players
+                              (print_cards other_player_hand)^"\n"));) 
+    other_players
 
 (** [player_bet_interface player game] updates the state [game] accordingly 
     after the player bets. *)
@@ -212,7 +218,8 @@ let rec turn game players =
   let end_game = dealer_interface game in
   let end_players = get_non_dealers end_game in
   let dealer_value = Player.value_hand (State.get_dealer end_game) in
-  ANSITerminal.(print_string [red] ("\nDealer's hand: "^string_of_int dealer_value));
+  ANSITerminal.(print_string [red] ("\nDealer's hand: "^
+                                    string_of_int dealer_value));
   List.iter (fun p -> match game_end_status dealer_value p with
       | PlayerLose -> ANSITerminal.(print_string [red] 
                                       ("\nPlayer "^(get_id p)^" lost "^
@@ -248,7 +255,8 @@ let play_game game =
 let main () =
   ANSITerminal.(print_string [red]
                   "\n\nWelcome to the 3110 Blackjack Game engine.\n");
-  print_endline "Please enter the number of AI CPU's you wish to play against (0, 1 or).\n";
+  print_endline ("Please enter the number of AI CPU's "^
+                 "you wish to play against (0, 1 or).\n");
   print_string  "> ";
   match read_line () with
   | exception End_of_file -> ()
