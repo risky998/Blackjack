@@ -106,6 +106,17 @@ let player_interface_info player game =
                               (print_cards other_player_hand)^"\n"));) 
     other_players
 
+(** [player_interface_help] is a string detailing instructions to help
+    players with the terminal commands to play blackjack *)
+let player_interface_help = 
+  "\n
+Player Help Menu:\n 
+Type \"bet x\" to bet an x amount of money.\n
+Type \"hit\" to receive another card.\n
+Type \"stay\" if you are satisfied with your hand.\n
+Type \"double\" to double your initial bet in return for a single card.\n
+Type \"quit\" to leave the game.\n"
+
 (** [player_bet_interface player game] updates the state [game] accordingly 
     after the player bets. *)
 let rec player_bet_interface player game = 
@@ -135,6 +146,9 @@ let rec player_bet_interface player game =
                               "\nError: Not enough money!\n");
             player_bet_interface player game
         end
+      | Help -> 
+        ANSITerminal.(print_string [white] player_interface_help);
+        player_bet_interface player game
       | _ -> 
         ANSITerminal.(print_string [red] "\nYou need to bet first!\n");
         player_bet_interface player game
@@ -181,6 +195,9 @@ let rec player_interface player game =
                                          "\nError: Double Failed!\n");
               player_interface player game                        
           end
+        | Help -> 
+          ANSITerminal.(print_string [white] player_interface_help)
+            player_interface player game
         | _ -> 
           ANSITerminal.(print_string [red] "\nError: Invalid command!\n");
           player_interface player game
