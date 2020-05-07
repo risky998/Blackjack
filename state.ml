@@ -17,11 +17,6 @@ let rec get_dealer_hand_value players =
   | [] -> failwith "Dealer was not found"
   | h::t -> if (is_dealer h) then value_hand h else get_dealer_hand_value t 
 
-let print_cards = function
-  | [] -> ""
-  | [s] -> s
-  | h::t -> List.fold_left (fun acc e -> acc^", "^e) h t
-
 let init_state json = 
   { players = json |> member "players" |> to_list |> List.map init_player;
     deck = Deck.(full_deck () |> shuffle);
@@ -49,7 +44,8 @@ let in_stayed player game =
 let stayed_length game = 
   List.length (game.stayed)
 
-(** DOCUMENTATION*)
+(** [find_player_hand_value] finds the player [p] in the list of [players]
+    and gets their hand value. *)
 let rec find_player_hand_value p players = 
   match players with
   | [] -> 0

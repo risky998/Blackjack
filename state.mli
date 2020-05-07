@@ -16,7 +16,11 @@ type result = Legal of t | Illegal
 (* The type representing the player's result at the end of the game. *)
 type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
 
+(** [get_players] gets a list of all the players from the state.  *)
 val get_players : t -> Player.t list
+
+(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
+val get_dealer_hand_value : Player.t list -> int
 
 (** [init_state] is the initial state of the game after each player
     has drawn their first 2 cards and those cards drawn are removed from the 
@@ -49,9 +53,6 @@ val bet : int -> Player.t -> t -> result
 
 (** [all_have_bet g] is true if all non-dealer players have bet, false otherwise. *)
 val all_have_bet : t -> bool
-
-(** [get_dealer_hand_value players] gets the dealer's hand value from a list of all the players in state.  *)
-val get_dealer_hand_value : Player.t list -> int
 
 (** [game_end_status d p] returns whether the player won, lost, tied, or got a blackjack at the end of the game. *)
 val game_end_status: int -> Player.t -> status 
