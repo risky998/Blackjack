@@ -4,29 +4,25 @@
       "id": "1",
       "total_money": 300,
       "dealer": false,
-      "ai": false,
-      "current_turn": true
+      "ai": false
     },
     {
       "id": "2",
       "total_money": 300,
       "dealer": true,
-      "ai": true,
-      "current_turn": false
+      "ai": true
     },
     {
       "id": "3",
       "total_money": 300,
       "dealer": false,
-      "ai": true,
-      "current_turn": false
+      "ai": true
     },
     {
       "id": "4",
       "total_money": 300,
       "dealer": false,
-      "ai": true,
-      "current_turn": false
+      "ai": true
     }
   ]
 }

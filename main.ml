@@ -186,6 +186,82 @@ let rec player_interface player game =
           player_interface player game
       end
 
+(** [get_json_list ()] is a list of all the json games. *)
+let get_json_list unit = 
+  let dir = Unix.opendir "." in
+
+  let contains_json file = 
+    try
+      let i = String.rindex file '.' in
+      String.sub file i (String.length file - i) = ".json"
+    with _ -> false in
+
+  let rec read_files dir acc =
+    match Unix.readdir dir with
+    |file when contains_json file -> 
+      (try
+         let game = String.sub file 0 (String.rindex file '.') in
+         read_files dir (game::acc)
+       with _ -> read_files dir acc )
+    |file -> read_files dir acc 
+    |exception End_of_file -> (Unix.closedir dir); acc in
+  read_files dir []
+
+let to_json players = 
+  let p_ids = List.map Player.get_id players in 
+  let p_money = List.map Player.total_money players in
+  let p_dealer = List.map Player.is_dealer players in 
+  let p_ai = List.map Player.is_ai players in
+
+  let rec make_player_json acc id total_money dealer ai = 
+    match id, total_money, dealer, ai with
+    | [], [], [], [] -> List.rev acc
+    | i::is, n::ns, d::ds, c::cs -> 
+      let player = `Assoc [("id", `String i);
+                           ("total_money",`Int n);
+                           ("dealer", `Bool d);
+                           ("ai", `Bool c);] in 
+      make_player_json (player::acc) is ns ds cs
+    |_ -> 
+      failwith "Corrupted game" in
+
+  let json_player_lst = make_player_json [] p_ids p_money p_dealer p_ai in 
+  `Assoc [("players", `List json_player_lst)]
+
+let rec save_game game =
+  print_string  ("\n\nEnter game name: "); 
+  match String.trim (read_line ()) |> 
+        String.map (fun s -> if s = ' ' then '_' else s) with
+  | "" -> print_endline "Enter a valid file name!";
+    save_game game
+  | s ->  if List.mem (s^".json") (get_json_list ()) then
+      begin
+        ANSITerminal.(print_string [red] ("Game with name"^s^
+                                          "already exists. Overwrite? (y/n)"));
+        print_string "> ";
+        match read_line () with
+        | "y" | "yes" -> begin 
+            Yojson.to_file (s^".json") (to_json (get_players game));
+            exit 0 
+          end
+        | "no" | "n" -> save_game game
+        | _ -> print_endline "Enter a valid command!";
+      end
+    else Yojson.to_file (s^".json") (to_json (get_players game));
+    exit 0
+
+let rec save_game_prompt game = 
+  print_endline  ("\n\nWould you like to save this game? (y/n)"); 
+  print_string  "> "; 
+  begin 
+    match read_line () with
+    | "yes" | "y" -> 
+      save_game game
+    | "no" | "n" -> exit 0
+    | _ -> print_endline "Enter a valid command!";
+
+  end
+
 (** [turn game players] runs the game by first allowing all the non-dealer
     players to execute commands, then letting the dealer execute its command.
     After all players have executed their commands, the state [game] is updated
@@ -242,10 +318,20 @@ let rec turn game players =
                                       "; Hand Value: "^
                                       string_of_int (value_hand p)))
     ) end_players;
-  let new_game = reset end_game in 
-  ANSITerminal.(print_string [red]   
-                  "\n\nNEW GAME\n");
-  turn (new_game) (get_players (new_game))
+  let new_game = reset end_game in
+  new_game_prompt new_game
+
+and new_game_prompt game = 
+  if List.length (get_non_dealers game) = 0 then () else
+    print_endline  ("\n\nPlay again? (y/n)"); 
+  print_string  "> "; 
+  match read_line () with
+  | "yes" | "y" -> ANSITerminal.(print_string [red]   
+                                   "\n\nNEW GAME\n");
+    turn (game) (get_players (game))
+  | "no" | "n" -> save_game_prompt game
+  | _ -> print_endline "Enter a valid command!";
+    new_game_prompt game
 
 (** [play_game f] starts the adventure in file [f]. *)
 let play_game game =

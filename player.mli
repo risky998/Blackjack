@@ -68,5 +68,3 @@ val draw_card : Deck.card -> t -> t
 val draw_card_dealer : Deck.card -> t -> t
 
 val get_bet : t -> int
-val is_current_turn : t -> bool
-

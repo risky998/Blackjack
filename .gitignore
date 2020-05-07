@@ -2,3 +2,6 @@
 *.byte
 _build/
 *.DS_Store
+*.json
+!init.json
+*.zip

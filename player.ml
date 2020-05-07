@@ -10,7 +10,6 @@ type t = {
   player_bet : int;
   dealer: bool;
   ai: bool;
-  current_turn : bool;
 }
 
 (** [get_value_hand hand acc] is the value of the cards in a player's hand. *)
@@ -30,7 +29,6 @@ let init_player j = {
   player_bet = 0;
   dealer = j |> member "dealer" |> to_bool;
   ai = j |> member "ai" |> to_bool;
-  current_turn = j |> member "current_turn" |> to_bool;
 }
 
 let player_hand st = st.player_hand
@@ -46,9 +44,6 @@ let is_ai st = st.ai
 let is_dealer st = st.dealer
 
 let get_bet st = st.player_bet
-
-
-let is_current_turn st = st.current_turn
 
 let set_dealer st = {st with dealer = true}
 
