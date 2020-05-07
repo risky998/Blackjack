@@ -44,8 +44,8 @@ val shuffle : t -> t
 (*[points] is the blackjack value of each card*)
 val points : card -> int
 
-(*[reduce_ace] is the new hand with the first Ace with a value of 11 to be 
-  reduced to a value of 1 so that the player does not go bust. *)
+(*[reduce_ace] is the new hand with the first Ace of value 11 
+  reduced to a value of 1 so that the player does not bust. *)
 val reduce_ace : card list -> card list 
 
 (* [draw_start deck] is a tuple where the first element is a list of the 2

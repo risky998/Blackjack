@@ -34,7 +34,7 @@ val is_ai : t -> bool
 (** [is_dealer st] is whether the player is a dealer in state [st]. *)
 val is_dealer : t -> bool
 
-(** [set_dealer st] is sets the player as a dealer in state [st]. *)
+(** [set_dealer st] sets the player as a dealer in state [st]. *)
 val set_dealer : t -> t
 
 (**  [player_bet money st] is the new state after a player bets [money] on a play. *)
@@ -67,4 +67,5 @@ val draw_card : Deck.card -> t -> t
     card. The dealer will only draw if hand is less than or equal 16 in value.  *)
 val draw_card_dealer : Deck.card -> t -> t
 
+(** [get_bet st] returns the amount of money bet in state [st]. *)
 val get_bet : t -> int
