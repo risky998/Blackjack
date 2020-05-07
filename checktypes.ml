@@ -31,7 +31,6 @@ module type PlayerSig = sig
   val is_ai : t -> bool
   val is_dealer : t -> bool
   val get_bet : t -> int
-  val is_current_turn : t -> bool
   val set_dealer : t -> t
   val player_bet: int -> t -> t
   val player_win: t -> t

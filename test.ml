@@ -126,7 +126,7 @@ let command_tests =
 
     "testing Stay" >:: (fun _ -> assert_equal Stay (parse "stay"));
 
-    "testing Money" >:: (fun _ -> assert_equal Money (parse "money"));
+    (* "testing Money" >:: (fun _ -> assert_equal Money (parse "money")); *)
 
     "testing Help" >:: (fun _ -> assert_equal Help (parse "help"));
 
