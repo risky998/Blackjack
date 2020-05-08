@@ -176,11 +176,6 @@ let split player g =
   let new_players = split_helper player g.players in
   Legal {g with players = new_players}
 
-let dealer = get_dealer g in
-let dealer_hand = player_hand dealer in
-let dealer_len = List.length dealer_hand in
-if dealer_len = 0 then None else Some (List.nth dealer_hand (dealer_len-1))
-
 type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
 
 (** [game_end_status dealer_value p] is the status [status] of player [p] in the game given the value [dealer_value] of the dealer's hand.*)
