@@ -107,4 +107,21 @@ let draw_card_dealer card st =
   | _ -> st
 (* | _ -> Illegal *)
 
+let init_temp_player p =
+  let ai = is_ai p in
+  let lst = p.player_hand in 
+  let card2 = List.nth lst 1 in
+  let value = points card2 in
+  {id = "temp" ^ get_id p;
+   player_hand = [card2];
+   value_hand = value;
+   total_money = 0;
+   player_bet = p.player_bet;
+   dealer =  false;
+   ai = ai;}
 
+let split p = 
+  let card1 = List.nth p.player_hand 0 in 
+  { p with  player_hand = [card1];
+            value_hand = p.value_hand/2;
+            total_money = p.total_money - p.player_bet}

@@ -69,3 +69,9 @@ val draw_card_dealer : Deck.card -> t -> t
 
 (** [get_bet st] returns the amount of money bet in state [st]. *)
 val get_bet : t -> int
+
+(** [init_temp_player player] is a new temporary player created based on the field existing in player [player] to be used when [player] splits during a hand. *)
+val init_temp_player: t -> t
+
+(** [split p] the the player [p] updated after they choose to split,*)
+val split: t -> t
