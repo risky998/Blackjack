@@ -13,12 +13,21 @@ let print_cards = function
 (** [ai_interface ai game] updates the state [game] accordingly after 
     the AI executes its commands. *)
 let ai_interface ai game = 
-  let ai_bet = get_bet ai in
-  if ai_bet = 0 then 
-    match bet 300 ai game with
+  if get_bet ai = 0 then 
+    let ai_money = total_money ai in
+    let player_bet = get_bet (get_player game) in
+    let bet_amount =
+      begin
+        match ai_money, player_bet with
+        | x,y when y>=x -> x
+        | x,y when y = 0 -> min x 50
+        | _ -> player_bet
+      end in
+    match bet bet_amount ai game with
     | Legal new_game -> 
       ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
-                                           " bets "^(string_of_int 20)^"\n"));
+                                           " bets "^
+                                           (string_of_int bet_amount)^"\n"));
       new_game
     | Illegal -> game
   else 
