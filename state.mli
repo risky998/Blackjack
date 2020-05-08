@@ -75,6 +75,9 @@ val get_non_dealers: t -> Player.t list
 (** [get_player g] is all the non-dealer, non main player [players] in the game state g. It is all the AI units. *)
 val get_other_players: t -> Player.t list
 
+(** [split player g] the result [r] after player [player] splits in game state [g]*)
+val split: Player.t -> t -> result 
+
 (** [dealer_top_card g] is the top card [card] of the dealer in game state [g]. *)
 val dealer_top_card : t -> Deck.card option
 
