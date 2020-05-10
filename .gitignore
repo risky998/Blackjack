@@ -1,6 +1,8 @@
 *.code-workspace
 *.byte
 _build/
+doc.private/
+doc.public/
 *.DS_Store
 *.json
 !init1.json

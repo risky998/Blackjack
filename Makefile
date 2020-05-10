@@ -15,6 +15,10 @@ build:
 check:
 	bash checkenv.sh && bash checktypes.sh
 
+finalcheck: check
+	bash checkzip.sh
+	bash finalcheck.sh
+	
 test:
 	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST)
 

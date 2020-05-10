@@ -1,10 +1,10 @@
 
 (** 
-   Representation of dynamic adventure state.
+   Representation of the state of a blackjack game.
 
-   This module represents the state of an adventure as it is being played,
-   including the adventurer's current room, the rooms that have been visited,
-   and functions that cause the state to change.
+   This module represents the state of a blackjack game as it is being played,
+   including the list of players, the current deck, as well as the number
+   of players who have stayed (ended their turn).
 *)
 
 (** The abstract type of values representing the game state. *)
