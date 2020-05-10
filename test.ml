@@ -229,6 +229,21 @@ let state_tests =
 
     "testing in_stayed" >:: (fun _ ->
         assert_equal true (g |> stay (get_player g)|> in_stayed (get_player g)));
+
+    "testing hit" >:: (fun _ -> 
+        assert_equal true (match hit (get_player g) g with
+            | Legal g -> (g |> get_player |> value_hand) > 0
+            | Illegal -> false));
+
+    "testing bet" >:: (fun _ -> 
+        assert_equal 10 (match bet 10 (get_player g) g with
+            | Legal g -> g |> get_player |> get_bet
+            | Illegal -> 0));
+
+    "testing illegal bet" >:: (fun _ -> 
+        assert_equal false (match bet 0 (get_player g) g with
+            | Legal g -> true
+            | Illegal -> false));
   ]
 
 let suite =
