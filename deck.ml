@@ -12,21 +12,21 @@ let ranks = [Two; Three; Four; Five; Six; Seven; Eight; Nine; Ten;
 
 let suits = [Clubs; Diamonds; Hearts; Spades]
 
-let rank (card:card) : rank = fst card
+let rank card = fst card
 
-let suit (card:card) : suit = snd card
+let suit card = snd card
 
 let empty = []
 
-let size (deck:t) : int = List.length deck
+let size deck = List.length deck
 
-let full_deck (unit:unit) : t = ((List.concat (List.map (fun rank -> 
+let full_deck unit = ((List.concat (List.map (fun rank -> 
     List.map (fun suit -> (rank, suit)) suits) ranks)))
 
 let shuffle deck =
   QCheck.Gen.(generate1 (shuffle_l deck))
 
-let points ((rank, suit):card) : int =
+let points (rank, suit) =
   match rank with
   | Ace x -> x
   | Two -> 2 

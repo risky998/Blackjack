@@ -389,5 +389,5 @@ let main () =
     let game = init_state (Yojson.Basic.from_file file_name) in 
     play_game game
 
-(* Execute the game engine. *)
+(** Execute the game engine. *)
 let () = main ()

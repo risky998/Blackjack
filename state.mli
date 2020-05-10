@@ -10,10 +10,10 @@
 (** The abstract type of values representing the game state. *)
 type t 
 
-(* The type representing the result of an attempted move. *)
+(** The type representing the result of an attempted move. *)
 type result = Legal of t | Illegal
 
-(* The type representing the player's result at the end of the game. *)
+(** The type representing the player's result at the end of the game. *)
 type status = PlayerLose | PlayerWin | PlayerBlackJack | PlayerTie
 
 (** [get_players] gets a list of all the players from the state.  *)

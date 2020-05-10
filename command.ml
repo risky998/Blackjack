@@ -1,5 +1,3 @@
-(* Note: You may introduce new code anywhere in this file. *) 
-
 type money = int
 
 type command = 
@@ -23,8 +21,8 @@ let rec remove_spaces = function
     if h = "" then remove_spaces t
     else String.lowercase_ascii h::remove_spaces t
 
-(* [assert_int_of_string str] is true if int_on_string can be 
-   called on x, false otherwise.  *)
+(** [assert_int_of_string str] is true if int_on_string can be 
+    called on x, false otherwise.  *)
 let assert_int_of_string str = 
   try
     Some (int_of_string str) 

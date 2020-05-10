@@ -5,7 +5,7 @@
    getting the value of a player's hand.
 *)
 
-(* The abstract representation type for blackjack player. *)
+(** The abstract representation type for blackjack player. *)
 type t
 
 (** [init_state hand value money] is the initial state of a blackjack player
