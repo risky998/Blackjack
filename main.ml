@@ -10,58 +10,68 @@ let print_cards = function
   | [s] -> s
   | h::t -> List.fold_left (fun acc e -> acc^", "^e) h t
 
+(** [ai_bet_interface ai game] updates the state [game] accordingly after 
+    the AI bets. *)
+let ai_bet_interface ai game = 
+  let ai_money = total_money ai in
+  let player_bet = get_bet (get_player game) in
+  let bet_amount =
+    begin
+      match ai_money, player_bet with
+      | x,y when y>=x -> x
+      | x,y when y = 0 -> min x 50
+      | _ -> player_bet
+    end in
+  match bet bet_amount ai game with
+  | Legal new_game -> 
+    ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
+                                         " bets "^
+                                         (string_of_int bet_amount)^"\n"));
+    new_game
+  | Illegal -> game
+
+(** [ai_play_interface ai game] updates the state [game] accordingly after 
+    the AI hits, stays, or doubles. *)
+let ai_play_interface ai game = 
+  let dealer_top_card = 
+    begin
+      match dealer_top_card game with
+      | None -> 0
+      | Some c -> points c
+    end
+  in
+  match hit_double_stay_strategy dealer_top_card ai with
+  | Stay -> 
+    ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
+                                         " stays\n"));
+    stay ai game
+  | Hit -> 
+    begin 
+      match hit ai game with
+      | Legal new_game -> 
+        ANSITerminal.(print_string [yellow] ("\nPlayer "^
+                                             (get_id ai)^" hits\n"));          
+        new_game
+      | Illegal -> game
+    end
+  | Double -> 
+    begin 
+      match double ai game with
+      | Legal new_game -> 
+        ANSITerminal.(print_string [yellow] ("\nPlayer "^
+                                             (get_id ai)^" doubles down.\n"));          
+        new_game
+      | Illegal -> game
+    end
+  | _ -> game
+
 (** [ai_interface ai game] updates the state [game] accordingly after 
     the AI executes its commands. *)
 let ai_interface ai game = 
   if get_bet ai = 0 then 
-    let ai_money = total_money ai in
-    let player_bet = get_bet (get_player game) in
-    let bet_amount =
-      begin
-        match ai_money, player_bet with
-        | x,y when y>=x -> x
-        | x,y when y = 0 -> min x 50
-        | _ -> player_bet
-      end in
-    match bet bet_amount ai game with
-    | Legal new_game -> 
-      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
-                                           " bets "^
-                                           (string_of_int bet_amount)^"\n"));
-      new_game
-    | Illegal -> game
+    ai_bet_interface ai game
   else 
-    let dealer_top_card = 
-      begin
-        match dealer_top_card game with
-        | None -> 0
-        | Some c -> points c
-      end
-    in
-    match hit_double_stay_strategy dealer_top_card ai with
-    | Stay -> 
-      ANSITerminal.(print_string [yellow] ("\nPlayer "^(get_id ai)^
-                                           " stays\n"));
-      stay ai game
-    | Hit -> 
-      begin 
-        match hit ai game with
-        | Legal new_game -> 
-          ANSITerminal.(print_string [yellow] ("\nPlayer "^
-                                               (get_id ai)^" hits\n"));          
-          new_game
-        | Illegal -> game
-      end
-    | Double -> 
-      begin 
-        match double ai game with
-        | Legal new_game -> 
-          ANSITerminal.(print_string [yellow] ("\nPlayer "^
-                                               (get_id ai)^" doubles down.\n"));          
-          new_game
-        | Illegal -> game
-      end
-    | _ -> game
+    ai_play_interface ai game
 
 (** [dealer_interface game] updates the state [game] accordingly after 
     the dealer executes its commands. *)
@@ -132,6 +142,7 @@ Type \"bet x\" to bet an x amount of money.
 Type \"hit\" to receive another card.
 Type \"stay\" if you are satisfied with your hand.
 Type \"double\" to double your initial bet in return for a single card.
+Type \"split\" to split your hand if your starting cards have the sa
 Type \"quit\" to leave the game.
 \n"
 
@@ -213,6 +224,16 @@ let rec player_interface player game =
             | Illegal -> ANSITerminal.(print_string [red] 
                                          "\nError: Double Failed!\n");
               player_interface player game                        
+          end
+        | Split -> 
+          begin
+            match split player game with
+            | Legal new_game -> 
+              new_game
+            | Illegal -> ANSITerminal.(print_string [red] 
+                                         ( "\nError: You can only split with"^
+                                           " a pair!\n"));
+              player_interface player game      
           end
         | Help -> 
           ANSITerminal.(print_string [white] player_interface_help);
@@ -310,11 +331,13 @@ let rec turn game players =
                                        string_of_int (get_bet p)^
                                        "; Hand Value: "^
                                        string_of_int (value_hand p)))
-      | PlayerWin -> ANSITerminal.(print_string [blue] 
-                                     ("\nPlayer "^(get_id p)^" won "^
-                                      string_of_int ((get_bet p)*2)^
-                                      "; Hand Value: "^
-                                      string_of_int (value_hand p)))
+      | PlayerWin -> 
+        let money_won = int_of_float (float_of_int (get_bet p) *. 1.5) in
+        ANSITerminal.(print_string [blue] 
+                        ("\nPlayer "^(get_id p)^" won "^
+                         string_of_int (money_won)^
+                         "; Hand Value: "^
+                         string_of_int (value_hand p)))
       | PlayerBlackJack -> ANSITerminal.(print_string [blue] 
                                            ("\nPlayer "^(get_id p)^" won "^
                                             string_of_int ((get_bet p)*2)^

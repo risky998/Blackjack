@@ -5,9 +5,10 @@ type money = int
 type command = 
   | Quit 
   | Bet of money
+  | Hit
   | Stay
   | Double
-  | Hit
+  | Split
   | Help
 
 exception Empty
@@ -38,6 +39,7 @@ let parse str =
     else if s = "stay" then Stay
     else if s = "help" then Help 
     else if s = "double" then Double
+    else if s = "split" then Split
     else raise Malformed
   | s::m::[] -> if s = "bet" then 
       begin

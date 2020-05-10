@@ -5,9 +5,6 @@
    getting the value of a player's hand.
 *)
 
-(* The abstract representation type for a player's hand. *)
-(* type hand = Deck.t *)
-
 (* The abstract representation type for blackjack player. *)
 type t
 
@@ -34,13 +31,19 @@ val is_ai : t -> bool
 (** [is_dealer st] is whether the player is a dealer in state [st]. *)
 val is_dealer : t -> bool
 
+(** [is_dealer st] is whether the player is a split player from an 
+    existing player in state [st]. *)
+val is_split : t -> bool
+
 (** [set_dealer st] sets the player as a dealer in state [st]. *)
 val set_dealer : t -> t
 
-(**  [player_bet money st] is the new state after a player bets [money] on a play. *)
+(**  [player_bet money st] is the new state after a player bets [money] on a 
+     play. *)
 val player_bet : int -> t -> t
 
-(**  [player_double money st] is the new state after a player doubles on a play. *)
+(**  [player_double money st] is the new state after a player doubles on a 
+     play. *)
 val player_double: t -> t 
 
 (** [player_win st] is the new state if the player wins a hand. *)
@@ -49,10 +52,12 @@ val player_win: t -> t
 (** [player_lose st] is the new state if the player loses a hand. *)
 val player_lose: t -> t
 
-(** [player_tie st] is the new state if the player is tied with the dealer's hand. *)
+(** [player_tie st] is the new state if the player is tied with the dealer's 
+    hand. *)
 val player_tie: t -> t
 
-(** [player_blackjack st] is the new state if the player has a blackjack hand. *)
+(** [player_blackjack st] is the new state if the player has a blackjack 
+    hand. *)
 val player_blackjack: t -> t
 
 (** [dealer_reset_hand st] is the dealer's hand reset to having no cards. *)
@@ -63,15 +68,17 @@ val dealer_reset_hand: t -> t
     hand value is below 21 if possible. *)
 val draw_card : Deck.card -> t -> t
 
-(** [draw_card card st] is the new state of the dealer after drawing a 
-    card. The dealer will only draw if hand is less than or equal 16 in value.  *)
-val draw_card_dealer : Deck.card -> t -> t
-
 (** [get_bet st] returns the amount of money bet in state [st]. *)
 val get_bet : t -> int
 
-(** [init_temp_player player] is a new temporary player created based on the field existing in player [player] to be used when [player] splits during a hand. *)
+(** [init_temp_player player] is a new temporary player created based on 
+    the field existing in player [player] to be used when [player] splits 
+    during a hand. *)
 val init_temp_player: t -> t
 
-(** [split p] the the player [p] updated after they choose to split,*)
+(** [split p] is the updated player [p] after they choose to split,*)
 val split: t -> t
+
+(** [split_money_reward money p] is [p] after money [money] has been added to 
+    player [p]. *)
+val split_money_reward:  int -> t -> t 

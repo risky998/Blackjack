@@ -6,4 +6,5 @@ _build/
 !init1.json
 !init2.json
 !init3.json
+!test.json
 *.zip

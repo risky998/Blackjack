@@ -18,9 +18,10 @@ type money = int
 type command = 
   | Quit 
   | Bet of money
+  | Hit
   | Stay
   | Double
-  | Hit
+  | Split
   | Help
 
 (** Raised when an empty command is parsed. *)

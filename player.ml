@@ -10,6 +10,7 @@ type t = {
   player_bet : int;
   dealer: bool;
   ai: bool;
+  split: bool
 }
 
 (** [get_value_hand hand acc] is the value of the cards in a player's hand. *)
@@ -29,6 +30,7 @@ let init_player j = {
   player_bet = 0;
   dealer = j |> member "dealer" |> to_bool;
   ai = j |> member "ai" |> to_bool;
+  split = j |> member "split" |> to_bool;
 }
 
 let player_hand st = st.player_hand
@@ -44,6 +46,8 @@ let is_ai st = st.ai
 let is_dealer st = st.dealer
 
 let get_bet st = st.player_bet
+
+let is_split st = st.split
 
 let set_dealer st = {st with dealer = true}
 
@@ -64,7 +68,10 @@ let player_double st =
     }
 
 let player_win st =  
-  {st with total_money = st.total_money + 2*st.player_bet; 
+  let float_money = (float_of_int st.total_money) +. 
+                    ((float_of_int st.player_bet) *. 1.5) in
+  let int_money = int_of_float float_money in
+  {st with total_money = int_money; 
            player_bet = 0; player_hand = []; value_hand = 0}
 
 let player_lose st =  
@@ -102,34 +109,36 @@ let draw_card card st =
     {st with player_hand = reduced_hand; value_hand = reduced_value}
   else {st with player_hand = new_hand; value_hand = new_value;}
 
-let draw_card_dealer card st = 
-  let old_value = get_value_hand st.player_hand 0
-  in match old_value with 
-  | n when n <= 16 -> let new_hand = card::st.player_hand in
-    let new_value = get_value_hand new_hand 0 in 
-    if (new_value > 21) then 
-      let reduced_hand = reduce_ace_below_21 new_hand in
-      let reduced_value = get_value_hand reduced_hand 0 in
-      {st with player_hand = reduced_hand; value_hand = reduced_value; }
-    else {st with player_hand = new_hand; value_hand = new_value; }
-  | _ -> st
-(* | _ -> Illegal *)
-
 let init_temp_player p =
-  let ai = is_ai p in
   let lst = p.player_hand in 
   let card2 = List.nth lst 1 in
   let value = points card2 in
-  {id = "temp" ^ get_id p;
-   player_hand = [card2];
-   value_hand = value;
-   total_money = 0;
-   player_bet = p.player_bet;
-   dealer =  false;
-   ai = ai;}
+  match rank card2 with
+  | Ace x -> 
+    {p with id = get_id p^"(Split)";
+            player_hand = [(Ace 11, (suit card2))];
+            value_hand = 11;
+            total_money = 0;
+            split = true;}
+  | _ -> 
+    {p with id = get_id p^"(Split)";
+            player_hand = [card2];
+            value_hand = value;
+            total_money = 0;
+            split = true;}
 
 let split p = 
   let card1 = List.nth p.player_hand 0 in 
-  { p with  player_hand = [card1];
-            value_hand = p.value_hand/2;
-            total_money = p.total_money - p.player_bet}
+  match rank card1 with
+  | Ace x -> 
+    { p with  player_hand = [(Ace 11, (suit card1))];
+              value_hand = 11;
+              total_money = p.total_money - p.player_bet}
+
+  | _ -> 
+    { p with  player_hand = [card1];
+              value_hand = p.value_hand/2;
+              total_money = p.total_money - p.player_bet}
+
+let split_money_reward money p = 
+  {p with total_money = p.total_money + money}

@@ -4,9 +4,29 @@ open Player
 open Command
 open State
 
-(********************************************************************
-   Here are some helper functions for your testing of set-like lists. 
- ********************************************************************)
+(** TEST PLAN
+    OUnit vs. Manual testing: We used OUnit tests mainly for the static
+    modules of the game, such as Deck and Player. Manual testing by running 
+    `make play` is used for dynamic components, such as State and Command.
+    This is because playing the actual game of Blackjack involves many 
+    different scenarios that a test suite may not be able to cover
+    holistically. Hence, most of our testing of the functionality of the
+    game was in manual testing of the game.
+
+    The modules that are covered in the test suite include
+    Deck (testing drawing cards, creating a deck, general characteristics
+    of a card), Player (player characteristics and player win/lose status), 
+    Command (parsing different commands), State (get functions).
+    Our test cases are mainly glass box testing since we know the program
+    structure and wrote the code ourselves. We also used our internal knowledge 
+    of the code we wrote to guide the selection of the test data 
+    and to improve the test design.
+
+    The testing approach works for this system because this is mostly a
+    dynamic game, where the player and AI make dynamic choices, thus
+    manual testing is effective in this area. For more static components,
+    we do use glass-box testing to help reveal any errors in the framework
+    of our game implementation. *)
 
 (** [cmp_set_like_lists lst1 lst2] compares two lists to see whether
     they are equivalent set-like lists.  That means checking two things.
@@ -65,28 +85,47 @@ let deck_tests =
   [
     "testing rank" >:: (fun _ -> assert_equal Two (rank (Two, Clubs)));
 
+    "testing rank with reduced ace" >:: (fun _ -> assert_equal (Ace 1) 
+                                            (rank (Ace 1, Clubs)));
+
     "testing suit" >:: (fun _ -> assert_equal Clubs (suit (Two, Clubs)));
 
-    "testing full_deck" >:: (fun _ -> assert_equal 52 (Deck.size (full_deck ())));
+    "testing full_deck" >:: (fun _ -> assert_equal 52 
+                                (Deck.size (full_deck ())));
 
-    "testing shuffle" >:: (fun _ -> assert_equal 52 (Deck. size (shuffle (full_deck ()))));
+    "testing shuffle" >:: (fun _ -> assert_equal 52 
+                              (Deck.size (shuffle (full_deck ()))));
 
     "testing points" >:: (fun _ -> assert_equal 2 (points (Two, Clubs)));
 
-    (*"testing draw_start" >:: (fun _ -> assert_equal ([(Two, Clubs); (Three, Diamonds)], [(Four, Hearts)])
-                                 (draw_start [(Two, Clubs); (Three, Diamonds); (Four, Hearts)])); *)
+    "testing points with regular Ace" >:: (fun _ -> assert_equal 11 
+                                              (points (Ace 11, Clubs)));
 
-    "testing reduce_ace1" >:: (fun _ -> assert_equal 1 ([(Ace 11, Spades); (Ace 11, Clubs)] |> reduce_ace |> List.hd |> points));
+    "testing points with reduced Ace" >:: (fun _ -> assert_equal 1 
+                                              (points (Ace 1, Clubs)));
 
-    "testing reduce_ace2" >:: (fun _ -> assert_equal 11 ([(Ace 11, Spades); (Ace 11, Clubs)] |> reduce_ace |> List.tl |> List.hd |> points));
+    "testing reduce_ace" >:: (fun _ -> assert_equal 1 
+                                 ([(Ace 11, Spades); (Three, Clubs)] |> 
+                                  reduce_ace |> List.hd |> points));
 
-    (* "testing draw_start" >:: (fun _ -> assert_equal ([(Ace 11, Spades); (Two, Clubs)], [(Three, Diamonds)]) 
-                                 [(Ace 11, Spades); (Two, Clubs); (Three, Diamonds)] |> draw_start); *)
+    "testing reduce_ace with two Aces" >:: (fun _ -> 
+        assert_equal 11 
+          ([(Ace 11, Spades); (Ace 11, Clubs)] |> 
+           reduce_ace |> List.tl |> List.hd |> points));
 
-    (* "testing draw" >:: (fun _ -> assert_equal ([(Ace 11, Spades)], [(Two, Clubs); (Three, Diamonds)]) 
-                           (draw [(Ace 11, Spades); (Two, Clubs), (Three, Diamonds)]));    *)
+    "testing string_of_card" >:: (fun _ -> assert_equal "8♣" 
+                                     (string_of_card (Eight, Clubs)));
 
-    "testing string_of_card" >:: (fun _ -> assert_equal "A♣" (string_of_card (Ace 11, Clubs)));
+    "testing string_of_card with Ace" >:: (fun _ -> assert_equal "A♣" 
+                                              (string_of_card (Ace 11, Clubs)));
+
+    "testing can_split_pair" >:: (fun _ -> assert_equal true 
+                                     (can_split_pair
+                                        [(Three, Clubs); (Three, Spades)]));
+
+    "testing can_split_pair2" >:: (fun _ -> assert_equal false 
+                                      (can_split_pair
+                                         [(Three, Clubs); (Four, Spades)]));
   ]
 
 let j = Yojson.Basic.from_file "test.json"
@@ -106,27 +145,46 @@ let player_tests =
 
     "testing is_ai" >:: (fun _ -> assert_equal false (is_ai st));
 
+    "testing is_split" >:: (fun _ -> assert_equal false (is_split st));
+
     "testing is_dealer" >:: (fun _ -> assert_equal false (is_dealer st));
 
-    "testing player_bet" >:: (fun _ -> assert_equal 3 (st |> player_bet 7|> total_money));
+    "testing player_bet" >:: (fun _ -> 
+        assert_equal 3 (st |> player_bet 7|> total_money));
 
-    "testing player_win" >:: (fun _ -> assert_equal 17 (st |> player_bet 7 |> player_win|> total_money));
+    "testing get bet" >:: (fun _ -> 
+        assert_equal 7 (st |> player_bet 7|> get_bet));
 
-    "testing player_lose" >:: (fun _ -> assert_equal 3 (st |> player_bet 7 |> player_lose|> total_money));
+    "testing player_win" >:: (fun _ -> 
+        assert_equal 14 (st |> player_bet 8 |> player_win|> total_money));
 
-    "testing draw_card" >:: (fun _ -> assert_equal 2 (st |> draw_card (Two, Clubs) |> value_hand));
+    "testing player_lose" >:: (fun _ -> 
+        assert_equal 3 (st |> player_bet 7 |> player_lose|> total_money));
+
+    "testing player_tie" >:: (fun _ -> 
+        assert_equal 10 (st |> player_bet 7 |> player_tie|> total_money));
+
+    "testing player_blackjack" >:: (fun _ -> 
+        assert_equal 17 (st |> player_bet 7 |> player_blackjack|> total_money));
+
+    "testing draw_card" >:: 
+    (fun _ -> assert_equal 2 (st |> draw_card (Two, Clubs) |> value_hand));
+
+    "testing draw_card with Ace" >:: 
+    (fun _ -> assert_equal 11 (st |> draw_card (Ace 11, Clubs) |> value_hand));
   ]
 
 let command_tests =
   [
-    "testing Quit" >:: (fun _ -> 
-        assert_equal Quit (parse "quit"));
+    "testing Quit" >:: (fun _ -> assert_equal Quit (parse "quit"));
 
     "testing Hit" >:: (fun _ -> assert_equal Hit (parse "hit"));
 
     "testing Stay" >:: (fun _ -> assert_equal Stay (parse "stay"));
 
-    (* "testing Money" >:: (fun _ -> assert_equal Money (parse "money")); *)
+    "testing Double" >:: (fun _ -> assert_equal Double (parse "double"));
+
+    "testing Split" >:: (fun _ -> assert_equal Split (parse "split"));  
 
     "testing Help" >:: (fun _ -> assert_equal Help (parse "help"));
 
@@ -136,6 +194,41 @@ let command_tests =
 
     "testing Malformed" >:: (fun _ -> 
         assert_raises Malformed (fun () -> parse "betting 10"));
+
+    "testing remove_spaces" >:: (fun _ -> assert_equal Split (parse "  split")); 
+
+    "testing Malformed 2" >:: (fun _ -> 
+        assert_raises Malformed (fun () -> parse "s plit"));
+  ]
+
+
+let j2 = Yojson.Basic.from_file "init1.json"
+let g = init_state j2
+let state_tests = 
+  [
+    "testing get_players" >:: (fun _ -> 
+        assert_equal 2 (g |> get_players |> List.length));
+
+    "testing get_player" >:: (fun _ -> 
+        assert_equal false (g |> get_player |> is_ai));
+
+    "testing get_other_players" >:: (fun _ ->
+        assert_equal 0 (g |> get_other_players |> List.length));
+
+    "testing get_non_dealers" >:: (fun _ -> 
+        assert_equal 1 (g |> get_non_dealers |> List.length));
+
+    "testing get_dealer" >:: (fun _ -> 
+        assert_equal true (g |> get_dealer |> is_dealer));
+
+    "testing get_dealer_hand_value" >:: (fun _ -> 
+        assert_equal 0 (g |> get_players |> get_dealer_hand_value));
+
+    "testing stay" >:: (fun _ -> 
+        assert_equal 1 (g |> stay (get_player g)|> stayed_length));
+
+    "testing in_stayed" >:: (fun _ ->
+        assert_equal true (g |> stay (get_player g)|> in_stayed (get_player g)));
   ]
 
 let suite =
@@ -143,6 +236,7 @@ let suite =
     deck_tests;
     player_tests;
     command_tests;
+    state_tests;
   ]
 
 let _ = run_test_tt_main suite

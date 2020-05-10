@@ -1,0 +1,7 @@
+{
+  "id": "Player1",
+  "total_money": 10,
+  "dealer": false,
+  "ai": false,
+  "split": false
+}

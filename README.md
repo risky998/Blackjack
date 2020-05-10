@@ -29,7 +29,7 @@ Here are the following player commands:
 - "hit": Draw a card from the deck.
 - "stay": Ends your turn and you can no longer execute any commands. Once all the non-dealers have chosen to stay, the dealer will begin his turn.
 - "double": Double the original bet you placed and draw a card. You can no longer choose to hit or stay.
-- "split":
+- "split": If the player has a pair, splits the players hand into two separate hands. The player can then play these hands separately. At the end of the turn, the rewards are cumulated back together.
 
 ## Creating custom game files
 

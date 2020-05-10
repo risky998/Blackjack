@@ -4,38 +4,38 @@
    This module handles shuffling the deck.
 *)
 
-(*The abstract representation type for a deck*)
+(* The abstract representation type for a deck *)
 type t
 
-(*The type representing the suit of a card*)
+(* The type representing the suit of a card *)
 type suit = Clubs | Diamonds | Hearts | Spades
 
-(*The type that represents the value of a card*)
+(* The type that represents the value of a card *)
 type rank = Two | Three | Four | Five | Six | Seven | Eight | Nine
           | Ten | Jack | Queen | King | Ace of int
 
-(*The type that represents a card*)
+(* The type that represents a card *)
 type card = (rank * suit)
 
-(*[ranks] is a list of all the possible card ranks*)
+(* [ranks] is a list of all the possible card ranks *)
 val ranks : rank list
 
-(*[suits] is a list of all the possible card suits*)
+(* [suits] is a list of all the possible card suits *)
 val suits : suit list
 
-(*[rank card] is the number value of [card]*)
+(* [rank card] is the number value of [card] *)
 val rank : card -> rank
 
-(*[suit card] is the suit of [card]*)
+(* [suit card] is the suit of [card] *)
 val suit : card -> suit
 
-(*[size] is the size of the deck [t]*)
+(* [size] is the size of the deck [t] *)
 val size : t -> int
 
 (* [empty] is an empty deck [t] *)
 val empty : t
 
-(*[full_deck] is a full deck of 52 cards*)
+(* [full_deck] is a full deck of 52 cards *)
 val full_deck : unit -> t
 
 (*[shuffle deck] is a deck of 52 cards with the order randomized*)
@@ -61,3 +61,7 @@ val draw : t -> (card * t) option
 (* [string_of_card card] is a card in string form, for example, (Two, Hearts) 
    is "Two of Hearts" and (King, Spades) is "King of Spades". *)
 val string_of_card : card -> string
+
+(* [can_split_pair hand] is true if a hand can be split, that is the hand
+   must contain only 2 cards and the 2 cards should be of the same rank. *)
+val can_split_pair : card list -> bool
