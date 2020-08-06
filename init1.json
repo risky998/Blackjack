@@ -1,3 +1,4 @@
+(* Game file for 1 player, 1 AI. *)
 {
   "players": [
     {
