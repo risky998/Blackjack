@@ -76,10 +76,6 @@ let cmp_demo =
    End helper functions.
  ********************************************************************)
 
-(* You are welcome to add strings containing JSON here, and use them as the
-   basis for unit tests.  Or you can add .json files in this directory and
-   use them, too.  Any .json files in this directory will be included
-   by [make zip] as part of your CMS submission. *)
 
 let deck_tests =
   [
